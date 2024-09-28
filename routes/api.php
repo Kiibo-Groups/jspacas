@@ -2,8 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\Category;
-use App\Models\Brand;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,32 +14,40 @@ use App\Models\Brand;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//  return $request->user();
+
+Route::group(array('namespace' => 'App\Http\Controllers\Api'), function () {
+
+    Route::get('welcome','ApiController@welcome');
+    Route::get('getDataInit','ApiController@getDataInit');
+    
+    
+    /*________________________
+    |                         
+    |           Login         
+    |_________________________
+    */
+    
+    Route::post('login', 'ApiController@login');
+    Route::post('logout', 'ApiController@logout');
+
+    /*________________________
+    |                         
+    |           Signup         
+    |_________________________
+    */
+    Route::post('signup', 'ApiController@signup');
+    
+    /*________________________
+    |                         
+    |    Validacion de usuario 
+    |    y Obtencion de DATA
+    |_________________________
+    */
+    Route::post('chkUser','ApiController@chkUser');
+    Route::get('userinfo/{id}','ApiController@userinfo');
+    Route::post('updateInfo/{id}','ApiController@updateInfo');
+
+
 });
-
-
-//get categories
-Route::get('categories', function(Request $request) {
-    $perPage = $request->perPage ?: 7;
-    $categories = Category::where('deleted_at', '=', null)
-      ->paginate($perPage, ['id', 'name']);
-    return response()->json([
-      'data' => $categories->items(),
-      'current_page' => $categories->currentPage(),
-      'last_page' => $categories->lastPage()
-    ]);
-  });
-
-  //get brands
-Route::get('brands', function(Request $request) {
-    $perPage = $request->perPage ?: 7;
-    $brands = Brand::where('deleted_at', '=', null)
-      ->paginate($perPage, ['id', 'name']);
-    return response()->json([
-      'data' => $brands->items(),
-      'current_page' => $brands->currentPage(),
-      'last_page' => $brands->lastPage()
-    ]);
-  });
-  

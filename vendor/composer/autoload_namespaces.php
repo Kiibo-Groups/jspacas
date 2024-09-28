@@ -6,9 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Way\\Generators' => array($vendorDir . '/oscarafdev/laravel-4-generators/src'),
-    'OscarAFDev\\MigrationsGenerator' => array($vendorDir . '/oscarafdev/migrations-generator/src'),
-    'Mockery' => array($vendorDir . '/mockery/mockery/library'),
+    'SimpleSoftwareIO\\QrCode\\' => array($vendorDir . '/simplesoftwareio/simple-qrcode/src'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
-    'Arphp' => array($vendorDir . '/ar-php/ar-php/src'),
+    'BaconQrCode' => array($vendorDir . '/bacon/bacon-qr-code/src'),
 );
