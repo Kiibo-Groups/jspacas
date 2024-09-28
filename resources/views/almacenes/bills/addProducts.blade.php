@@ -1,0 +1,18 @@
+@extends('layouts.app')
+
+@section('title') Agregar Producto @endsection
+@section('breadcrumb') Nuevo elemento @endsection
+
+@section('content') 
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 mx-auto"> 
+            {!! Form::model($data, ['url' => [$form_url],'files' => true],['class' => 'col s12']) !!}
+                @include('almacenes.bills.formProduct')
+            </form> 
+        </div>
+    </div>
+</div>
+@endsection
