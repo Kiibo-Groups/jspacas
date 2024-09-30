@@ -114,7 +114,7 @@ class Product extends Model
 
         if (isset($data['image'])) {
             $filename   = time() . rand(111, 699) . '.' . $data['image']->getClientOriginalExtension();
-            $data['image']->move("upload/products/", $filename);
+            $data['image']->move("public/upload/products/", $filename);
             $add->image = $filename;
         }
 

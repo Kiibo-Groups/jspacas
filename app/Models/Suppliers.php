@@ -70,7 +70,7 @@ class Suppliers extends Model
         
         if (isset($data['logo'])) {
             $filename = time() . rand(111, 699) . '.' . $data['logo']->getClientOriginalExtension();
-            $data['logo']->move("upload/suppliers/logo/", $filename);
+            $data['logo']->move("public/upload/suppliers/logo/", $filename);
             $add->logo = $filename;
         }
 

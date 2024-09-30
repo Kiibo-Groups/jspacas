@@ -52,7 +52,7 @@ class BannersController extends Controller
             if(isset($input['img']))
             {
                 $filename   = time().rand(111,699).'.' .$input['img']->getClientOriginalExtension(); 
-                $input['img']->move("upload/banner/", $filename);   
+                $input['img']->move("public/upload/banner/", $filename);   
                 $input['img'] = $filename;   
             }
 
@@ -92,10 +92,10 @@ class BannersController extends Controller
             if(isset($input['img']))
             {
                 // Eliminamos la imagen anterior
-                unlink("upload/banner/".$lims_data_banners->img);
+                unlink("public/upload/banner/".$lims_data_banners->img);
 
                 $filename   = time().rand(111,699).'.' .$input['img']->getClientOriginalExtension(); 
-                $input['img']->move("upload/banner/", $filename);   
+                $input['img']->move("public/upload/banner/", $filename);   
                 $input['img'] = $filename;   
             }
 
@@ -114,7 +114,7 @@ class BannersController extends Controller
     {
         try {
             $res = Banners::find($id);
-            unlink("upload/banner/".$res->img);
+            unlink("public/upload/banner/".$res->img);
             $res->delete();
             return redirect(env('admin').'/banners')->with('message','Elemento eliminado con éxito.');
         } catch (\Exception $th) {

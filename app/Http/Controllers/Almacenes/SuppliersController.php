@@ -94,7 +94,10 @@ class SuppliersController extends Controller
 
 	public function deleteSuppliers($id)
 	{
-		Suppliers::find($id)->delete();
+		$suppliers = Suppliers::find($id);
+		unlink("public/upload/suppliers/logo/".$suppliers->image);
+		$suppliers->delete();
+
 		return Redirect::route('suppliers')->with('message','Registro eliminado con éxito.');
 	}
 

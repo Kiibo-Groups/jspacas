@@ -121,6 +121,7 @@ class ProductsController extends Controller
     public function destroy($id)
     {
         $product = Product::find($id);
+        unlink("public/upload/products/".$product->image);
         $product->delete();
         return Redirect::route('products.index')->with('message','Registro eliminado con éxito.');
 
