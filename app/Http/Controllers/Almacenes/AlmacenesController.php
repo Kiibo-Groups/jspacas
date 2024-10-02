@@ -322,8 +322,8 @@ class AlmacenesController extends Controller
 	{
 		try {
 			$code = str_split($codebar); // JSP<ID Supplier><ID Product><Serializacion> | JS37001
-			$product_id = $code[3];
-			$supplier_id = $code[2];
+			$product_id = $code[4];
+			$supplier_id = $code[3];
 
 			// Validamos si este codigo no se ha ingreado anterioremente
 			$chkCode = Salidas::where('barcode', $codebar)->count();
