@@ -23,8 +23,6 @@
                     </div>
                 </div>
 
-
-
                 <div class="row mb-3">
                     <div class="col-md-12">
                         <div class="card">
@@ -52,7 +50,7 @@
                                 <form action="{{ $form_url }}" method="post" enctype="multipart/form-data"
                                     autocomplete="off">
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                    <input type="hidden" name="product_id" id="product_id"> 
+                                    <input type="hidden" name="product_id" id="product_id" required>
                                     <div class="row">
                                         <div class="col-md-2">
                                             <div class="form-group mb-3">
