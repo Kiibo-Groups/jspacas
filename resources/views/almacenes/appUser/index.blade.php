@@ -64,7 +64,7 @@
                                             style="margin: 0px; position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 38px);"
                                             data-popper-placement="bottom-start">
                                             <li>
-                                                <a href="{{ Asset($link .'/' . $row->id.'/edit') }}" class="dropdown-item">
+                                                <a href="{{ Asset($link. $row->id.'/edit') }}" class="dropdown-item">
                                                     Editar
                                                 </a>
                                             </li>
