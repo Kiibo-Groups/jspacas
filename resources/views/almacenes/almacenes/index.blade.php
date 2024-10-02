@@ -1,7 +1,8 @@
 @extends('layouts.app')
-@section('title') Productos @endsection
-@section('page_active') Productos @endsection 
+@section('title') Perfíl de administración @endsection
+@section('page_active') Almacenes @endsection 
 @section('subpage_active') Listado @endsection 
+
 
 @section('content')
 <!-- Start Content-->
@@ -14,9 +15,9 @@
                     <div class="col-md-6" style="text-align: left;">
                         <b style="margin-left:20px">@yield('page_active') | @yield('subpage_active')</b>
                     </div>
-                    <div class="col-md-6" style="text-align: right;"><a href="{{ Asset($link . 'create') }}"
+                    <div class="col-md-6" style="text-align: right;"><a href="{{ Asset($link . 'add') }}"
                         class="btn btn-success rounded-pill waves-effect waves-light" style=" margin-right:20px" >Agregar
-                            producto</a>&nbsp;&nbsp;&nbsp;</div>
+                            Almacen</a>&nbsp;&nbsp;&nbsp;</div>
                 </div>
 
                 <div class="card-body pt-3">
@@ -24,33 +25,24 @@
                     <table class="table table-hover ">
                         <thead>
                             <tr>
-                                <th>Imagen</th>
+                                <th>Logo</th>
                                 <th>Nombre</th>
-                                <th>Bodega</th> 
-                                <th>Categoria</th> 
-                                <th>Precio</th>
-                                <th>Status</th>
+                                <th>Ciudad</th>
+                                <th>Status</th> 
                                 <th style="text-align: right">Opciones</th>
-                            </tr> 
+                            </tr>
+
                         </thead>
                         <tbody>
 
                             @foreach ($data as $row)
                                 <tr>
-                                    <td width="10%">
-                                        <img src="{{ asset('upload/products/'.$row->image) }}"
-                                            style="height: 50px;max-width:none !important;">
+                                    <td width="5%">
+                                        <img src="{{ asset('upload/user/logo/'.$row->logo) }}"
+                                            style="width:50px;height: 50px;max-width:none !important;">
                                     </td>
                                     <td>{{ $row->name }}</td>
-                                    <td>
-                                        @if ($row->bodega_id != 0)
-                                            {{ $row->Almacen }}
-                                        @else 
-                                            <span class="badge bg-info">Sin Ingreso</span>
-                                        @endif
-                                    </td> 
-                                    <td>{{ $row->Cat }}</td> 
-                                    <td>${{ number_format($row->price,2) }}</td>
+                                    <td>{{ $row->city }}</td>
                                     <td>
                                         @if ($row->status == 1)
                                             <button type="button"  class="btn btn-xs btn-soft-success waves-effect waves-light"
@@ -73,13 +65,7 @@
                                             style="margin: 0px; position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 38px);"
                                             data-popper-placement="bottom-start">
                                             <li>
-                                                <a href="{{ Asset($link . $row->id . '/edit') }}"
-                                                    class="dropdown-item">
-                                                    Imprimir Etiquetas
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ Asset($link . $row->id . '/edit') }}"
+                                                <a href="{{ Asset($link .  $row->id . '/edit') }}"
                                                     class="dropdown-item">
                                                     Editar
                                                 </a>
@@ -87,7 +73,7 @@
                                             <!-- Delete -->
                                             <li>
                                                 <a href="javascript::void()" class="dropdown-item"
-                                                    onclick="deleteConfirm('{{ Asset($link . 'delete/' . $row->id) }}')">
+                                                    onclick="deleteConfirm('{{ Asset($link .'delete/' . $row->id) }}')">
                                                     Eliminar
                                                 </a>
                                             </li>

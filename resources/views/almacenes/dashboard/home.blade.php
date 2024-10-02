@@ -7,17 +7,40 @@
 @section('content')
 <!-- Start Content-->
 <div class="container-fluid">
+    @if (Auth::user()->role == 0 || Auth::user()->role == 1)
     <div class="row">  
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-body">
                     <h4>Bienvenido al Dashboard Almacen</h4>
-                </div> 
+                </div>
             </div>
         </div>
     </div>
+    @elseif(Auth::user()->role == 2)
+    <div class="row">
+        <div class="col-xl-6 col-md-6 m-auto">
+            <div class="card">
+                <div class="card-body widget-user">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-lg me-3 flex-shrink-0">
+                            <img src="{{ asset('assets/images/logo-sm-dark.png') }}" class="img-fluid rounded-circle" alt="user">
+                        </div>
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="mt-0 mb-1">
+                                Bienvenido(a) {{ strtoupper(Auth::user()->name) }}
+                            </h5>
+                            <p class="text-muted mb-2 font-13 text-truncate">{{ Auth::user()->email }}</p>
+                            <small class="text-info"><b>Tu panel de almacenista</b></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
-
+    @if (Auth::user()->role == 0 || Auth::user()->role == 1)
     <div class="row">
         @if (count($almacens) > 0)
         @foreach ($almacens as $item)
@@ -60,5 +83,6 @@
         </div><!-- end col -->
         @endif 
     </div>
+    @endif
 </div>
 @endsection

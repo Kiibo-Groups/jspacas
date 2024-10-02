@@ -57,9 +57,6 @@ JSPacas | Ingresa a tu panel de control
                     <button class="btn btn-primary" type="submit"> Iniciar sesión</button>
                 </div>
             </div>
-
-            <p class="small mb-5 pb-lg-2"><a class="text-muted" href="#!">Forgot password?</a></p>
-            <p>Don't have an account? <a href="#!" class="link-info">Register here</a></p>
         </form>
     </div>
 @endsection

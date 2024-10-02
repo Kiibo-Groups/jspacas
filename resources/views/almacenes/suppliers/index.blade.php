@@ -26,9 +26,7 @@
                         <thead>
                             <tr>
                                 <th>Logo</th>
-                                <th>Nombre</th>
-                                <th>Email</th>
-                                <th>Teléfono</th>
+                                <th>Nombre</th> 
                                 <th>Status</th>
                                 <th style="text-align: right">Opciones</th>
                             </tr>
@@ -42,9 +40,7 @@
                                         <img src="{{ asset('upload/suppliers/logo/'.$row->logo) }}"
                                             style="height: 50px;">
                                     </td>
-                                    <td>{{ $row->name }}</td> 
-                                    <td>{{ $row->email }}</td>
-                                    <td>{{ $row->phone }}</td>
+                                    <td>{{ $row->name }}</td>  
                                     <td>
                                         @if ($row->status == 1)
                                             <button type="button"  class="btn btn-xs btn-soft-success waves-effect waves-light"

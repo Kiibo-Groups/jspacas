@@ -37,7 +37,7 @@ class ProductsExport implements FromView,WithHeadings,WithTitle
         $res = new Product;
         
 		return View($this->folder.'print_labels',[
-            'data' => $res->PrintLabels($_POST['bodega'])
+            'data' => $res->PrintLabels($_POST['product_id'], $_POST['qty_labels'])
 		]);
     }
 }

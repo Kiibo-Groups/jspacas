@@ -10,30 +10,8 @@
                             <input type="text" class="form-control" name="name" value="{{ $data->name }}"
                                 id="name" autocomplete="off">
                         </div>
-                    </div> 
-                    <div class="col-6">
-                        <div class="form-group mb-3">
-                            <label for="phone">Número teléfonico</label>
-                            <input type="text" class="form-control" id="phone" name="phone"
-                                value="{{ $data->phone }}" autocomplete="off">
-                        </div>
-                    </div> 
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            <label for="email">Correo</label>
-                            <input type="email" class="form-control" id="email" name="email" value="{{$data->email}}" autocomplete="off">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            <label for="address">Dirección</label>
-                            <input type="address" class="form-control" id="address" name="address" value="{{$data->address}}" autocomplete="off">
-                        </div>
-                    </div>
-                </div>
+                    </div>  
+                </div> 
             </div>
         </div>
     </div>

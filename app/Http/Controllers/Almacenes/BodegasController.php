@@ -33,7 +33,7 @@ class BodegasController extends Controller
             'form_url'	=> Asset('products/almacens'),
 			'link' => 'products/almacens/',
 			'data' => new Almacen,
-            'almacenistas' => $almacenistas->getAll(0, 1, Auth::user()->id),
+            'almacenistas' => $almacenistas->getAll(0, 2, Auth::user()->id),
         ]); 
     }
  
@@ -61,7 +61,7 @@ class BodegasController extends Controller
             'data' => $data,
             'form_url'	=> Asset('products/almacens/'.$id),
             'link' => 'products/almacens/',
-            'almacenistas' => $almacenistas->getAll(0, 1, Auth::user()->id),
+            'almacenistas' => $almacenistas->getAll(0, 2, Auth::user()->id),
         ]); 
     }
  
@@ -72,7 +72,6 @@ class BodegasController extends Controller
 		if($data->validate($request->all(),$id))
 		{
 			return redirect::back()->withErrors($data->validate($request->all(),$id))->withInput();
-			exit;
 		}
 
 		$data->addNew($request->all(),$id);

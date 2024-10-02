@@ -151,9 +151,10 @@
         @endif
     @endif
 
+    <!-- Toastr js -->
+    <script src="{{ asset('assets/libs/toastr/build/toastr.min.js') }}"></script>
 
-
-
+    <script src="{{ asset('assets/js/pages/toastr.init.js') }}"></script>
 
     <!-- App js-->
     <script src="{{ asset('assets/js/app.js') }}"></script>

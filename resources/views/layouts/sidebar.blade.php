@@ -5,17 +5,13 @@
         
         <!-- User box -->
         <div class="user-box text-center"> 
-            <img @if (Auth::guard('admin')->check()) src="{{ asset('assets/images/logo.png') }}" @else src="{{ asset('upload/user/logo/'.Auth::user()->logo) }}" @endif alt="user-img" title="Mat Helme" class="rounded-circle img-thumbnail avatar-md">
+            <img src="{{ asset('assets/images/logo-sm-dark.png') }}" alt="user-img" title="Mat Helme" class="rounded-circle img-thumbnail avatar-md">
             <div class="dropdown">
                 <a href="#" class="user-name h5 mt-2 mb-1 d-block">Bienvenido(a)</a>
             </div> 
 
             <p class="text-muted left-user-info">
-                @if (Auth::guard('admin')->check())
-                {{ auth()->guard('admin')->user()->name }}
-                @else 
-                    {{ auth()->guard()->user()->name }}
-                @endif
+                {{ auth()->guard()->user()->name }}
             </p>
             <ul class="list-inline">
                 <li class="list-inline-item">
@@ -25,9 +21,9 @@
                 </li>
 
                 <li class="list-inline-item">
-                    <a href="{{ route('user.logout') }}">
+                    <a href="javascript:void(0)" class="logout_btn" action="{{ route('logout') }}">
                         <i class="mdi mdi-power"></i>
-                    </a>
+                    </a> 
                 </li>
             </ul>
         </div>
@@ -39,41 +35,65 @@
 
                 <li class="menu-title">Principal</li>
                 
+
+                @if (Auth::user()->role == 0 || Auth::user()->role == 1 || Auth::user()->role == 2)
                 <li>
                     <a href="{{ route('home') }}">
                         <i class="mdi mdi-view-dashboard"></i>
                         <span>&nbsp;Dashboard </span>
                     </a>
                 </li>
+                @endif
 
-                {{-- <li>
-                    <a href="{{ route('pos') }}">
-                        <i class="mdi mdi-printer-pos"></i>
-                        <span>&nbsp;Sistema POS </span>
-                    </a>
-                </li> --}}
-
+                @if (Auth::user()->role == 2)
                 <li>
-                    <a href="{{ route('orders.index') }}">
-                        <i class="mdi mdi-view-dashboard"></i>
-                        <span>&nbsp;Ordenes </span>
+                    <a href="{{ route('entradas') }}">
+                        <i class="mdi mdi-truck-check"></i>
+                        <span>&nbsp;Entradas </span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('salidas') }}">
+                        <i class="mdi mdi-tag-minus"></i>
+                        <span>&nbsp;Salidas </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="mdi mdi-truck-trailer"></i>
+                        <span>&nbsp;Pendientes </span>
+                    </a>
+                </li>
+                @endif
 
+                @if (Auth::user()->role == 0)
+                <li>
+                    <a href="{{ route('almacenes.index') }}">
+                        <i class="mdi mdi-mailbox-up"></i>
+                        <span>&nbsp;SubCuentas </span>
+                    </a>
+                </li>
+                @endif
+
+                @if (Auth::user()->role == 0 || Auth::user()->role == 1)
                 <li>
                     <a href="{{ route('almacenistas') }}">
                         <i class="mdi mdi-badge-account-horizontal"></i>
                         <span>&nbsp;Almacenistas </span>
                     </a>
                 </li>
+                @endif
 
+                @if (Auth::user()->role == 0 || Auth::user()->role == 1)
                 <li>
                     <a href="{{ route('suppliers') }}">
                         <i class="mdi mdi-cart-arrow-right"></i>
                         <span>&nbsp;Proveedores </span>
                     </a>
                 </li>
+                @endif
 
+                @if (Auth::user()->role == 0 || Auth::user()->role == 1)
                 <li>
                     <a href="#prods" data-bs-toggle="collapse">
                         <i class="mdi mdi-archive-outline"></i>
@@ -97,57 +117,27 @@
                             <li>
                                 <a href="{{ url('products/categories') }}">Categorias</a>
                             </li>
-                            <li>
-                                <a href="{{ url('products/brands') }}">Marcas</a>
-                            </li>
                         </ul>
                     </div>
                 </li>
+                @endif
 
-                {{-- <li>
-                    <a href="#purchases" data-bs-toggle="collapse">
-                        <i class="mdi mdi-archive-outline"></i>
-                        <span>&nbsp;Compras </span>
-                        <span class="menu-arrow"></span>
-                    </a>
-                    <div class="collapse" id="purchases">
-                        <ul class="nav-second-level">
-                            <li>
-                                <a href="{{ url('products') }}">Todas las compras</a>
-                            </li>
-                            <li>
-                                <a href="{{ url('products/create') }}">Crear Compra</a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-
-                <li>
-                    <a href="#purchases" data-bs-toggle="collapse">
-                        <i class="mdi mdi-archive-outline"></i>
-                        <span>&nbsp;Ventas </span>
-                        <span class="menu-arrow"></span>
-                    </a>
-                    <div class="collapse" id="purchases">
-                        <ul class="nav-second-level">
-                            <li>
-                                <a href="{{ url('products') }}">Todas las ventas</a>
-                            </li>
-                            <li>
-                                <a href="{{ url('products/create') }}">Crear Venta</a>
-                            </li>
-                        </ul>
-                    </div>
-                </li> --}}
-
+             
                 <li class="menu-title mt-2">Configuraciones</li>
 
                 <li>
-                    <a href="{{ url('/ajustes') }}">
+                    <a href="{{ url('/account') }}">
                         <i class="mdi mdi-cog"></i>
                         <span>&nbsp;Ajustes </span>
                     </a>
                 </li> 
+
+                <li>
+                    <a href="javascript:void(0)" class="logout_btn" action="{{ route('logout') }}">
+                        <i class="mdi mdi-power"></i>
+                        <span>&nbsp;Cerrar sesión</span>
+                    </a> 
+                </li>
             </ul>
 
         </div>

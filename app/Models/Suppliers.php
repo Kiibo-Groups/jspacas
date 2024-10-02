@@ -28,8 +28,7 @@ class Suppliers extends Model
     {
         if ($type === "add") {
             return [
-                'name'      => 'required|unique:suppliers',
-                'email'      => 'required|unique:suppliers',
+                'name'      => 'required|unique:suppliers', 
             ];
         } else {
             return [
@@ -58,9 +57,9 @@ class Suppliers extends Model
         $add                = $type === 'add' ? new Suppliers : Suppliers::find($type);
         $add->almacen_id    = isset($data['almacen_id']) ? $data['almacen_id'] : null;
         $add->name          = isset($data['name']) ? $data['name'] : null;
-        $add->email         = isset($data['email']) ? $data['email'] : null;
-        $add->phone         = isset($data['phone']) ? $data['phone'] : null;
-        $add->address       = isset($data['address']) ? $data['address'] : null;
+        $add->email         = isset($data['email']) ? $data['email'] : 'null';
+        $add->phone         = isset($data['phone']) ? $data['phone'] : 'null';
+        $add->address       = isset($data['address']) ? $data['address'] : 'null';
 
         if (isset($data['status']) && $data['status'] === 'on') {
             $add->status = 1;

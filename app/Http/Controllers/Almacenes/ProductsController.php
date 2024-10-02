@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Almacen;
 use App\Models\Brand;
+use App\Models\Suppliers;
 
 use Redirect;
 use Auth;
@@ -27,7 +28,6 @@ class ProductsController extends Controller
         return view($this->folder.'.index', [ 
             'data' => $prod->getAll(),
 			'link' => 'products/',
-            
         ]); 
     }
 
@@ -43,7 +43,7 @@ class ProductsController extends Controller
 			'data' => new Product,
             'categorys' => Category::where('status',1)->get(),
             'almacens' => Almacen::where('user_id', Auth::user()->id)->where('status',1)->get(),
-            'brands' => Brand::where('status',1)->get(),
+            'suppliers' => Suppliers::where('almacen_id', Auth::user()->id)->where('status',1)->get(),
         ]); 
     }
 
@@ -58,7 +58,6 @@ class ProductsController extends Controller
 		if($data->validate($request->all(),'add'))
 		{
 			return redirect::back()->withErrors($data->validate($request->all(),'add'))->withInput();
-			exit;
 		}
         
         $data->addNew($request->all(),"add");
@@ -90,7 +89,7 @@ class ProductsController extends Controller
             'link' => 'products/',
             'categorys' => Category::where('status',1)->get(),
             'almacens' => Almacen::where('user_id', Auth::user()->id)->where('status',1)->get(),
-            'brands' => Brand::where('status',1)->get(),
+            'suppliers' => Suppliers::where('almacen_id', Auth::user()->id)->where('status',1)->get(),
         ]); 
     }
 

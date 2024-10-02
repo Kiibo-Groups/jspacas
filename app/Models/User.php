@@ -15,6 +15,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Validator;
 
 use QrCode;
+use Auth;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -138,45 +139,6 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function login($request)
-    {
-        $credentials = $request->only('email', 'password');
-
-        $AppUser = User::where('email', $credentials['email'])->where('role', 1)->first();
-
-        if (!$AppUser || !Hash::check($credentials['password'], $AppUser->password)) {
-            return ['data' => [], 'msg' => 'Error! Datos de acceso incorrectos'];
-        }
-
-        $token = JWTAuth::fromUser($AppUser);
-
-        return ['data' => $AppUser, 'msg' => 'OK', 'token' => $token, 'type' => 'bearer'];
-    }
-
-    public function chkUser($data)
-    {
-
-        if (isset($data['user_id']) && $data['user_id'] != 'null') {
-            // Intentamos con el id
-            $res = User::find($data['user_id']);
-
-            if (isset($res->id)) {
-                return ['msg' => 'user_exist', 'user_id' => $res->id, 'data' => $res];
-            } else {
-                return ['msg' => 'not_exist'];
-            }
-        } else {
-            return ['msg' => 'not_exist'];
-        }
-    }
-
-    public function logout()
-    {
-        JWTAuth::invalidate(JWTAuth::getToken());
-
-        return ['msg' => 'OK'];
-    }
-
 
     /*
     |--------------------------------
@@ -287,7 +249,8 @@ class User extends Authenticatable implements JWTSubject
                 $query->where('users.almacen_id', $almacen);
             }
 
-        })->orderBy('users.id', 'DESC')->get();
+        })->where('id','<>',Auth::user()->id)
+        ->orderBy('users.id', 'DESC')->get();
     }
 
     function remove_accents($cadena)

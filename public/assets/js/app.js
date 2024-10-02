@@ -1,9 +1,7 @@
 /*
-Template Name: Adminto - Responsive Bootstrap 5 Admin Dashboard
-Author: CoderThemes
-Website: https://coderthemes.com/
-Contact: support@coderthemes.com
-File: Layout
+Author: Kiibo Groups
+Website: https://kiibo.mx/
+Contact: soporte@kiibo.mx
 */
 
 
@@ -491,7 +489,6 @@ function ($) {
     $.RightBar = new RightBar, $.RightBar.Constructor = RightBar
 }(window.jQuery),
 
-
 /**
  * Layout and theme manager
  * @param {*} $ 
@@ -553,7 +550,7 @@ function ($) {
                 showuser: false
             },
             topbar: {
-                color: "light"
+                color: "dark"
             },
             showRightSidebarOnPageLoad: false
         });
@@ -733,9 +730,11 @@ function ($) {
     },
 
     $.LayoutThemeApp = new LayoutThemeApp, $.LayoutThemeApp.Constructor = LayoutThemeApp
-}(window.jQuery);
+}(window.jQuery),
 
-
+/**
+ * Components
+ */
 !function ($) {
     "use strict";
 
@@ -883,6 +882,10 @@ function ($) {
 
 }(window.jQuery),
 
+/**
+ * Portlet plugin
+ * @param {*} $ 
+ */
 function($) {
     "use strict";
 
@@ -929,6 +932,10 @@ function($) {
     
 }(window.jQuery),
 
+/**
+ * App Init
+ * @param {*} $ 
+ */
 function ($) {
     'use strict';
 
@@ -1059,9 +1066,35 @@ function ($) {
 function ($) {
     "use strict";
     $.App.init();
-}(window.jQuery);
+}(window.jQuery),
 
- 
+/**
+ * Logout Form
+ * @param {*} $
+ */
+function ($) {
+    "use strict";
+
+    // Logout Form
+    $(document).on('click', '.logout_btn', function (e) {
+        e.preventDefault();
+        var $this = $(this);
+        var url = $this.attr('action'); 
+
+        console.log(url);
+        $.ajax({
+            async: true,
+            type:'POST',
+            url: url,
+            headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
+            success: function (response) {
+                // TODO: Redirect to login page
+                document.location.reload();
+            }
+        })
+    });
+
+}(window.jQuery);
 
 // Waves Effect
 Waves.init();

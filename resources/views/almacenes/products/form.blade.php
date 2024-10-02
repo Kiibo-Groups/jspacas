@@ -25,45 +25,33 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row"> 
                     <div class="col-md-6">
                         <div class="form-group mb-3">
-                            <label for="brand_id">Marca</label>
-                            <select name="brand_id" id="brand_id" class="form-select" required="required">
-                                
-                                @foreach($brands as $brn)
-                                <option value="{{ $brn->id }}" @if($data->brand_id == $brn->id) selected @endif>{{ $brn->name }}</option>
+                            <label for="supplier_id">Proveedor</label>
+                            <select name="supplier_id" id="supplier_id" class="form-select"  required="required"> 
+                                @foreach($suppliers as $cat)
+                                <option value="{{ $cat->id }}" @if($data->supplier_id == $cat->id) selected @endif>{{ $cat->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                    </div>
+                    </div> 
                     
                     <div class="col-md-6">
                         <div class="form-group mb-3">
-                            <label for="bodega_id">Bodega</label>
-                            <select name="bodega_id" id="bodega_id" class="form-select" required="required"> 
-                                @foreach($almacens as $alm)
-                                <option value="{{ $alm->id }}" @if($data->bodega_id == $alm->id) selected @endif>{{ $alm->name }}</option>
-                                @endforeach
-                            </select>
+                            <label for="name">Precio Unitario</label>
+                            <input type="text" class="form-control" name="price" value="{{ $data->price }}"
+                                id="taxes" autocomplete="off" required="required" placeholder="$$">
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="form-group mb-3">
                             <label for="type_unit">Unidad</label>
                             <input type="text" class="form-control" name="type_unit" placeholder="Unidad (Por ejemplo, KG, PC, etc.)" value="{{ $data->type_unit }}"
                                 id="type_unit" autocomplete="off" required="required">
                         </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-group mb-3">
-                            <label for="name">Peso</label>
-                            <input type="text" class="form-control" name="weight" value="{{ $data->weight }}"
-                                id="weight" autocomplete="off" required="required">
-                        </div>
-                    </div>
+                    </div> 
 
                     <div class="col-md-6">
                         <div class="form-group mb-3">
@@ -72,30 +60,9 @@
                                 id="labels">
                         </div>
                     </div>
-                </div>
- 
-                <div class="row"> 
-                    <div class="col-md-3">
-                        <div class="form-group mb-3">
-                            <label for="minimum_amount">Cantidad minima de compra</label>
-                            <input type="text" class="form-control" name="minimum_amount"
-                                value="{{ $data->minimum_amount }}" id="minimum_amount" autocomplete="off" required="required">
-                        </div>
-                    </div>
 
-                    <div class="col-md-9">
-                        <div class="form-group mb-3">
-                            <label for="barcode">Codigo de barras</label> 
-                            <div class="input-group">
-                                <span class="input-group-text" style="cursor: pointer" onclick="generateNumber()">
-                                    <i class="mdi mdi-barcode-scan"></i>
-                                </span>
-                                <input type="text" class="form-control" placeholder="barcode" aria-label="barcode" name="barcode" value="{{ $data->barcode }}" id="barcode" autocomplete="off" required="required">
-                            </div>
-                        </div>
-                    </div>
+                  
                 </div>
-
                  
                 <div class="row">
                     <div class="col-md-12">
@@ -117,8 +84,6 @@
                 </div> 
             </div>
         </div> 
- 
-        
     </div>
 
     <div class="col-md-4">
@@ -159,49 +124,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="card p-2">
-
-          
-            <div class="row mt-2">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label for="discount_rate">Tipo Descuento</label>
-                        <select name="discount_rate" id="discount_rate" class="form-select">
-                            <option value="0" @if($data->discount_rate == 0) selected @endif>En %</option>
-                            <option value="1" @if($data->discount_rate == 1) selected @endif>Fijo</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label for="name">Descuento</label>
-                        <input type="text" class="form-control" name="discount" value="{{ $data->discount }}"
-                            id="discount" autocomplete="off">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label for="taxes">Tax/IVA</label>
-                        <select name="taxes" id="taxes" class="form-select valid" title="Impuesto del valor agregado" aria-invalid="false">
-                            <option value="0.160000" @if($data->taxes == '0.160000') selected @endif>IVA 16%</option>
-                            <option value="0.08" @if($data->taxes == '0.08') selected @endif>IVA 8%</option>
-                            <option value="0.000000" @if($data->taxes == '0.000000') selected @endif>IVA 0%</option>
-                            <option value="0" data-type="exento" @if($data->taxes == '0') selected @endif>Exento</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label for="name">Precio Unitario</label>
-                        <input type="text" class="form-control" name="price" value="{{ $data->price }}"
-                            id="taxes" autocomplete="off" required="required">
-                    </div>
-                </div>
-            </div>
-        </div> 
+ 
     </div>
 </div> 

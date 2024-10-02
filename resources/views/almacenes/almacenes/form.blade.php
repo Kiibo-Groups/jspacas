@@ -1,5 +1,4 @@
-<input type="hidden" name="role" value="2">
-<input type="hidden" name="almacen_id" value="{{ Auth::user()->id }}">
+<input type="hidden" name="role" value="1">
 <div class="row mb-3">
     <div class="col-md-8">
         <div class="card">
@@ -7,7 +6,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group mb-3">
-                            <label for="name">Nombre completo</label>
+                            <label for="name">Nombre del Almacen</label>
                             <input type="text" class="form-control" name="name" value="{{ $data->name }}"
                                 id="name" autocomplete="off">
                         </div>
@@ -25,8 +24,7 @@
                             <input type="text" class="form-control" id="whatsapp_1" name="whatsapp_1"
                                 value="{{ $data->whatsapp_1 }}" autocomplete="off">
                         </div>
-                    </div> 
- 
+                    </div>  
                 </div>
             </div>
         </div>
@@ -63,6 +61,7 @@
                     </div>
                 </div>
                 
+             
             </div>
         </div>
 
@@ -72,7 +71,19 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-12 pt-3"> 
+                    <div class="col-md-12 pt-3">
+                        <label for="logo">
+                        @if ($data->id)
+                            <img src="{{ Asset('upload/user/logo/' . $data->logo) }}" height="150" style="cursor: pointer">
+                        @else
+                            <img src="{{ Asset('assets/images/placeholder.png') }}" height="150" style="cursor: pointer;border: 1px solid #e1e1e1;">
+                        @endif
+
+                        </label>
+                        <input type="file" name="logo" style="display: none" id="logo" class="form-control" @if(!$data->id) required="required" @endif>
+                    </div>
+                    
+                    <div class="col-md-6 pt-3"> 
                         <div class="form-check form-switch">
                             <input name="status" type="checkbox" class="form-check-input" id="customSwitch1" 
                             @if ($data->id)
@@ -82,12 +93,21 @@
                             @endif >
                             <label class="form-check-label" for="customSwitch1">Estatus</label>
                         </div>
-                    </div>
-                    <div class="col-md-12 mt-2">
-                        <button type="submit" class="btn btn-success btn-cta">Guardar Cambios</button>
+                        
                     </div>
                 </div>
             </div>    
-        </div> 
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-success btn-cta">Guardar Cambios</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div><!-- col-4-->
+ 
 </div>

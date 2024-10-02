@@ -107,6 +107,7 @@
                     <div class="form-group mb-3">
                         <label for="almacenista_id">Asignar Almacenista</label>
                         <select name="almacenista_id" id="almacenista_id" class="form-select" required="required"> 
+                            <option value="0">Selecciona un almacenista</option>
                             @foreach($almacenistas as $alm)
                             <option value="{{ $alm->id }}" @if($data->almacenista_id == $alm->id) selected @endif>{{ $alm->name }}</option>
                             @endforeach

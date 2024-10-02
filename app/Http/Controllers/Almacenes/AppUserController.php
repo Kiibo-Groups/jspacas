@@ -5,11 +5,19 @@ namespace App\Http\Controllers\Almacenes;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
-
-use App\Models\User;
-use App\Models\Admin;
-use App\Models\City;
-use App\Models\Settings;
+ 
+use App\Models\{
+	User,
+	Admin,
+	City,
+	Settings,
+	Entradas,
+	Salidas,
+	Product,
+	Suppliers,
+	Almacen,
+	Category
+};
 
 use Auth;
 use DB;
@@ -30,7 +38,7 @@ class AppUserController extends Controller
 		$res = new User; 
 
 		return view($this->folder.'index', [  
-			'data' => $res->getAll(0, 1, Auth::user()->id),
+			'data' => $res->getAll(0, 2, Auth::user()->id),
 			'link' => '/Almacenistas/',
         ]); 
 	}
@@ -100,7 +108,6 @@ class AppUserController extends Controller
 		return Redirect::route('almacenistas')->with('message','Registro eliminado con éxito.');
 	}
 
-
 	/*
 	|---------------------------------------------
 	|@Change Status
@@ -124,5 +131,74 @@ class AppUserController extends Controller
 		$res->save();
 
 		return redirect('/Almacenistas')->with('message','Status Updated Successfully.');
+	}
+
+	/*
+	|------------------------------------------------------------------
+	| Almacenistas - Entradas/Salidas/Pendientes
+	|------------------------------------------------------------------
+	*/
+	public function entradas()
+	{
+		$entradas =  Entradas::where('user_id', Auth::user()->id)->orderBy('created_at','DESC')->get();
+		$data = [];	
+
+
+		foreach ($entradas as $key) {
+		
+			$product = Product::find($key->products_id);
+
+			$supplier = Suppliers::find($product->supplier_id)->name;
+			$bodega   = Almacen::find($product->bodega_id)->name;
+			$category = Category::find($product->category_id);
+		
+			$data[] = (object)[
+				'id' => $product->id,
+				'image' => $product->image,
+				'name' => $product->name,
+				'descript' => $product->description,
+				'supplier' => $supplier,
+				'bodega' => $bodega,
+				'category' => $category->meta,
+				'price' => $product->price,
+				'code' => $key->barcode
+			];
+		} 
+
+		return view($this->folder . 'entradas.index', [
+			'data' => $data
+		]);
+	}
+
+	public function salidas()
+	{
+		$entradas =  Salidas::where('user_id', Auth::user()->id)->orderBy('created_at','DESC')->get();
+		$data = [];	
+
+
+		foreach ($entradas as $key) {
+		
+			$product = Product::find($key->products_id);
+
+			$supplier = Suppliers::find($product->supplier_id)->name;
+			$bodega   = Almacen::find($product->bodega_id)->name;
+			$category = Category::find($product->category_id);
+		
+			$data[] = (object)[
+				'id' => $product->id,
+				'image' => $product->image,
+				'name' => $product->name,
+				'descript' => $product->description,
+				'supplier' => $supplier,
+				'bodega' => $bodega,
+				'category' => $category->meta,
+				'price' => $product->price,
+				'code' => $key->barcode
+			];
+		} 
+		
+		return view($this->folder . 'salidas.index', [
+			'data' => $data
+		]);
 	}
 }

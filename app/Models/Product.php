@@ -15,11 +15,11 @@ class Product extends Model
     protected $fillable = [
         'id_sat',
         'user_id',
-        'name',
-        'brand_id',
+        'name', 
         'category_id',
         'almacen_id',
         'bodega_id',
+        'supplier_id',
         'image',
         'type_unit',
         'product_key',
@@ -37,6 +37,7 @@ class Product extends Model
         'discount_rate',
         'taxes',
         'price',
+        'qty',
         'status'
     ];
 
@@ -68,14 +69,14 @@ class Product extends Model
         $add                        = $type === 'add' ? new Product : Product::find($type);
         $add->id_sat                = isset($data['id_sat']) ? $data['id_sat'] : 0;
         $add->user_id               = auth()->user()->id;
-        $add->name                  = isset($data['name']) ? $data['name'] : null;
-        $add->brand_id              = isset($data['brand_id']) ? $data['brand_id'] : null;
+        $add->name                  = isset($data['name']) ? $data['name'] : null; 
         $add->category_id           = isset($data['category_id']) ? $data['category_id'] : null;
         $add->almacen_id            = isset($data['almacen_id']) ? $data['almacen_id'] : 0;
         $add->bodega_id             = isset($data['bodega_id']) ? $data['bodega_id'] : 0;
+        $add->supplier_id           = isset($data['supplier_id']) ? $data['supplier_id'] : 0;
         $add->type_unit             = isset($data['type_unit']) ? $data['type_unit'] : null;
-        $add->weight                = isset($data['weight']) ? $data['weight'] : null;
-        $add->minimum_amount        = isset($data['minimum_amount']) ? $data['minimum_amount'] : null;
+        $add->weight                = isset($data['weight']) ? $data['weight'] : 0;
+        $add->minimum_amount        = isset($data['minimum_amount']) ? $data['minimum_amount'] : 0;
         $add->barcode               = isset($data['barcode']) ? $data['barcode'] : null;
         $add->product_key           = isset($data['product_key']) ? $data['product_key'] : null;
         $add->unit_key              = isset($data['unit_key']) ? $data['unit_key'] : null;
@@ -83,7 +84,7 @@ class Product extends Model
         $add->meta                  = isset($data['meta']) ? $data['meta'] : null;
         $add->description           = isset($data['description']) ? $data['description'] : null;
         $add->discount              = isset($data['discount']) ? $data['discount'] : null;
-        $add->discount_rate         = isset($data['discount_rate']) ? $data['discount_rate'] : null;
+        $add->discount_rate         = isset($data['discount_rate']) ? $data['discount_rate'] : 0;
         $add->taxes                 = isset($data['taxes']) ? $data['taxes'] : null;
         $add->price                 = isset($data['price']) ? $data['price'] : null; 
 
@@ -130,9 +131,8 @@ class Product extends Model
     public function getAll()
     {
         return Product::join('categories','products.category_id','=','categories.id')
-                ->Leftjoin('brands','products.brand_id','=','brands.id')
                 ->Leftjoin('almacens','products.bodega_id','=','almacens.id')
-                ->select('categories.name as Cat','almacens.name as Almacen', 'brands.name as Brand','products.*')
+                ->select('categories.name as Cat','almacens.name as Almacen','products.*')
                 ->where('products.user_id', auth()->user()->id)
                 ->orderBy('products.id','DESC')->get();
     }
@@ -142,18 +142,32 @@ class Product extends Model
     |Print LABELS Information
     |--------------------------------------
     */
-    public function PrintLabels($bodega)
+    public function PrintLabels($product_id, $qty_labels)
     {
  
-        $prods  = Product::where('bodega_id',$bodega)->where('status',1)->where('user_id', Auth::user()->id)->get();
+        $product  = Product::find($product_id);
         $data   = [];
+        $num='0001';
+        
+        for($x = 2; $x < $qty_labels+2; $x++){
+             
+            // Serializamos el numero de labels
+            for($i=intval($num);$i<$x;$i++) {
+                $num = sprintf("%04s", $i);
+            }
 
-        foreach ($prods as $key) {
+            // Generamos la clave del producto para la impresión de etiquetas
+            $clave_prod = "JSP".$product->supplier_id.$product->id.$num;
+
             $data[] = [
-                'Clave' => $key->barcode,
-                'Descripcion' => $key->meta
+                'Clave' => $clave_prod,
+                'Descripcion' => $product->meta
             ];
+
+            $clave_prod = "";
+
         }
+
 
         return $data;
     }

@@ -4,14 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
  
-
-/*
-|-----------------------------------------
-| Admin Routes
-|-----------------------------------------
-*/
-
-include("admin.php");
+ 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,11 +12,15 @@ include("admin.php");
 */
 Route::namespace('App\Http\Controllers\Almacenes')->group(static function() {
 
-    Route::get('/',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'index']);
-    Route::get('login',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'index']);
-    Route::post('login', [App\Http\Controllers\Almacenes\AlmacenesController::class, 'login']);
 
     Route::middleware('auth')->group(static function () {
+        
+        /*
+        |-----------------------------------------
+        | Home
+        |-----------------------------------------
+        */
+        Route::get('/',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'index']); 
  
         /*
         |-----------------------------------------
@@ -33,6 +30,20 @@ Route::namespace('App\Http\Controllers\Almacenes')->group(static function() {
         Route::get('/orders', [App\Http\Controllers\Almacenes\OrdersController::class, 'index'])->name('orders.index');
         Route::post('/orders', [App\Http\Controllers\Almacenes\OrdersController::class, 'store'])->name('orders.store');
 
+
+        /*
+        |-----------------------------------------
+        |Almacenes
+        |-----------------------------------------
+        */
+        Route::get('almacenes',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'getAlmacens'])->name('almacenes.index'); 
+        Route::get('almacenes/add',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'createAlmacens'])->name('almacenes.create'); 
+        Route::post('almacenes/store',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'addAlmacens'])->name('almacenes.store'); 
+        Route::get('almacenes/{id}/edit',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'editAlmacens'])->name('almacenes.edit'); 
+        Route::patch('almacenes/update/{id}',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'updateAlmacens'])->name('almacenes.update'); 
+        Route::get('almacenes/delete/{id}',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'deleteAlmacens'])->name('almacenes.delete'); 
+        Route::get('almacenes/status/{id}',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'status']);
+        
 
         /*
         |-----------------------------------------
@@ -47,7 +58,7 @@ Route::namespace('App\Http\Controllers\Almacenes')->group(static function() {
         
         /*
         |-----------------------------------------
-        |Almacenistas
+        |Proveedores
         |-----------------------------------------
         */
         Route::resource('suppliers',"SuppliersController"); 
@@ -105,50 +116,31 @@ Route::namespace('App\Http\Controllers\Almacenes')->group(static function() {
         |Dashboard and Account Setting & Logout
         |-----------------------------------------
         */
-        // Route::get('/',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'home'])->name('user.dash');
         Route::get('home',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'home'])->name('home');
 
-        Route::get('/pos',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'pos'])->name('pos');
-        Route::get('/payment',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'payment'])->name('payment');
 
+     
         /*
         |-------------------------------
         |Bills Controllers
         |-------------------------------
         */
-        Route::resource('bill','BillController');
-        Route::get('bill/delete/{id}',[App\Http\Controllers\Almacenes\BillController::class, 'delete']);
-        Route::get('bill/status/{id}',[App\Http\Controllers\Almacenes\BillController::class, 'status']);
+        Route::get('account',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'account'])->name('account'); 
+        Route::post('update_account',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'update_account']);
+ 
 
-        Route::get('bill_products',[App\Http\Controllers\Almacenes\BillController::class, 'get_products']);
-        Route::get('add_product',[App\Http\Controllers\Almacenes\BillController::class, 'addProduct']);
-        Route::post('addProduct',[App\Http\Controllers\Almacenes\BillController::class, '_addProduct']);
-        Route::get('bill_products/delete/{id}',[App\Http\Controllers\Almacenes\BillController::class, 'deleteProduct']);
-
-        Route::get('bill_clients',[App\Http\Controllers\Almacenes\BillController::class , 'getClients']);
-        Route::get('add_client',[App\Http\Controllers\Almacenes\BillController::class , 'addClient'])->name('addClient');
-        Route::post('addClient',[App\Http\Controllers\Almacenes\BillController::class , '_addClient']);
-        Route::get('bill_clients/{id}/edit',[App\Http\Controllers\Almacenes\BillController::class , 'editClient']);
-        Route::post('updateClient',[App\Http\Controllers\Almacenes\BillController::class , 'updateClient']);
-        Route::get('bill_clients/delete/{id}',[App\Http\Controllers\Almacenes\BillController::class , 'deleteClient']);
-
-        Route::get('generate_bill_client/{id}', [App\Http\Controllers\Almacenes\BillController::class ,'generate_bill_client']);
-        Route::get('generate_bill', [App\Http\Controllers\Almacenes\BillController::class ,'generate_bill']);
-        Route::post('generate_bill', [App\Http\Controllers\Almacenes\BillController::class ,'_generate_bill']);
-
-        Route::get('download_bill/{id}/{type}', [App\Http\Controllers\Almacenes\BillController::class ,'download_bill']);
-        Route::get('send_bill_email/{id}', [App\Http\Controllers\Almacenes\BillController::class, 'send_bill_email']);
-        Route::get('cancel_bill/{id}', [App\Http\Controllers\Almacenes\BillController::class, 'cancel_bill']);
-        Route::post('cancel_bill', [App\Http\Controllers\Almacenes\BillController::class ,'_cancel_bill']);
-
-        Route::get('logout',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'logout'])->name('user.logout');
-     
+        
+        Route::get('entradas', [App\Http\Controllers\Almacenes\AppUserController::class, 'entradas'])->name('entradas');
+        Route::get('salidas', [App\Http\Controllers\Almacenes\AppUserController::class, 'salidas'])->name('salidas');
+        Route::get('pendientes', [App\Http\Controllers\Almacenes\AppUserController::class, 'pendientes'])->name('pendientes');
     });
  
 
     
 
     Route::get('getProductId/{id}',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'getProductId']);
+    Route::get('getProductBarCode/{code}',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'getProductBarCode']);
+    Route::get('getProductBarCodeSalidas/{code}',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'getProductBarCodeSalidas']);
     Route::get('getUserId/{id}',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'getUserId']);
 });
 

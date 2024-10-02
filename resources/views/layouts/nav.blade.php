@@ -3,13 +3,9 @@
       
         <li class="dropdown notification-list topbar-dropdown">
             <a class="nav-link dropdown-toggle nav-user me-0 waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                <img @if (Auth::guard('admin')->check()) src="{{ asset('assets/images/logo-sm-dark.png') }}" @else src="{{ asset('upload/user/logo/'.Auth::user()->logo) }}" @endif alt="user-image" class="rounded-circle">
+                <img src="{{ asset('assets/images/logo-sm-dark.png') }}" alt="user-image" class="rounded-circle">
                 <span class="pro-user-name ms-1">
-                    @if (Auth::guard('admin')->check())
-                        {{ auth()->guard('admin')->user()->name }}
-                    @else 
-                        {{ auth()->guard()->user()->name }}
-                    @endif
+                    {{ auth()->guard()->user()->name }}
                      <i class="mdi mdi-chevron-down"></i> 
                 </span>
             </a>
@@ -28,7 +24,7 @@
                 <div class="dropdown-divider"></div>
 
                 <!-- item-->
-                <a href="{{ url('logout') }}" class="dropdown-item notify-item">
+                <a href="javascript:void(0)" class="dropdown-item notify-item logout_btn" action="{{ route('logout') }}">
                     <i class="fe-log-out"></i>
                     <span>Cerrar sessión</span>
                 </a> 

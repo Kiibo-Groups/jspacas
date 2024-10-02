@@ -44,11 +44,13 @@ class Almacen extends Model
         if ($type === "add") {
             return [
                 'name'      => 'required|unique:almacens',
+                'almacenista_id'      => 'required|unique:almacens',
             ];
         } else {
             return [
 
                 'name'      => 'required|unique:almacens,name,' . $type,
+                'almacenista_id'      => 'required|unique:almacens,almacenista_id,' . $type,
             ];
         }
     }
@@ -78,7 +80,7 @@ class Almacen extends Model
         $add->phone         = isset($data['phone']) ? $data['phone'] : null;
         $add->street        = isset($data['street']) ? $data['street'] : null;
         $add->zip_code      = isset($data['zip_code']) ? $data['zip_code'] : null;
-        $add->state         = isset($data['state']) ? $data['state'] : null;
+        $add->state         = isset($data['state']) ? $data['state'] : 'null';
         $add->city          = isset($data['city']) ? $data['city'] : null;
         $add->no_exterior   = isset($data['no_exterior']) ? $data['no_exterior'] : null;
         $add->no_interior   = isset($data['no_interior']) ? $data['no_interior'] : null;
@@ -89,6 +91,7 @@ class Almacen extends Model
         } else {
             $add->status = 0;
         }
+
         $add->save();
     }
 }
