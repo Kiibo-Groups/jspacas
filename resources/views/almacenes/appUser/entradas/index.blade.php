@@ -154,7 +154,7 @@
     $(".dataTables_length label").addClass("form-label");
 
     let inputScanCode = document.getElementById('inputScanCode'); 
-    $("#inputScanCode").focus();
+    inputScanCode.focus();
 
 
     inputScanCode.addEventListener('keypress', function(e) {
@@ -174,6 +174,9 @@
             fetch(route).then(data => data.json()).then((data) => {
                 if (data.status == 200) { 
                     if (data.data == 'codeRegister') {
+                        inputScanCode.value = "";
+                        inputScanCode.focus();
+
                         Swal.fire({
                             title: 'Código validado!!',
                             text: "El código ingresado ya ha sido validado anteriormente..",
@@ -205,7 +208,8 @@
                         $(".card-body-product").show('slideDown');
  
                         $("#products_code").find('tbody').prepend(product).hide().show('slideDown');
-                        
+                        inputScanCode.value = "";
+                        inputScanCode.focus();
                         // $('#products_code').DataTable().ajax.reload();
                         // table.rows.add({
                         //     'id' : dataProd.id,

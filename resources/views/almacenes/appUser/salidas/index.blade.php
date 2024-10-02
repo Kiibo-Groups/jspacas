@@ -143,7 +143,8 @@
     $(".dataTables_length label").addClass("form-label");
 
     let inputScanCode = document.getElementById('inputScanCode'); 
-    $("#inputScanCode").focus();
+    inputScanCode.focus();
+    
 
     inputScanCode.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
@@ -162,6 +163,9 @@
             fetch(route).then(data => data.json()).then((data) => {
                 if (data.status == 200) { 
                     if (data.data == 'codeRegister') {
+                        inputScanCode.value = "";
+                        inputScanCode.focus();
+
                         Swal.fire({
                             title: 'Código validado!!',
                             text: "El código ingresado ya ha sido validado anteriormente..",
@@ -176,9 +180,12 @@
                             }
                         });   
                     }else if(data.data == 'notEnoughStock') {
+                        inputScanCode.value = "";
+                        inputScanCode.focus();
+
                         Swal.fire({
-                            title: 'Sin Stock!!',
-                            text: "El producto que intentas marcar se ha quedado sin Stock..",
+                            title: 'Sin Entradas!!',
+                            text: "El producto que intentas marcar no se ha registrado como entrada..",
                             type: 'error',
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
@@ -193,8 +200,7 @@
                         let product = data.htmlProduct;
 
                         let dataProd = data.dataProd;
-
-                        console.log(dataProd)
+ 
 
                         $("#image_prod").attr('src', dataProd.image);
                         $("#description_prod").text(dataProd.descript);
@@ -207,7 +213,9 @@
                         $(".card-body-product").show('slideDown');
  
                         $("#products_code").find('tbody').prepend(product).hide().show('slideDown');
-                        
+                        inputScanCode.value = "";
+                        inputScanCode.focus();
+
                         // $('#products_code').DataTable().ajax.reload();
                         // table.rows.add({
                         //     'id' : dataProd.id,

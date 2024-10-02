@@ -332,12 +332,12 @@ class AlmacenesController extends Controller
 			}
 
 			$product = Product::find($product_id);
-
-
-			// Validamos si cuenta con STOCK
-			if ($product->qty <= 0) {
-                return response()->json(['data' => 'notEnoughStock', 'product_id' => $product_id,'status' => 200]);
-            }
+ 
+			// Validamos si este codigo no se ha ingreado anterioremente
+			$chkCode = Entradas::where('barcode', $codebar)->count();
+			if ($chkCode == 0) {
+				return response()->json(['data' => 'notEnoughStock' , 'status' => 200]);
+			}
 
 			$supplier = Suppliers::find($supplier_id);
 
