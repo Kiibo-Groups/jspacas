@@ -52,7 +52,7 @@ Route::namespace('App\Http\Controllers\Almacenes')->group(static function() {
         */
         Route::resource('Almacenistas',"AppUserController"); 
         Route::get('Almacenistas',[App\Http\Controllers\Almacenes\AppUserController::class, 'index'])->name('almacenistas'); 
-        Route::get('Almacenistas/delete/{id}',[App\Http\Controllers\Almacenes\AppUserController::class, 'deleteAlmacenistas'])->name('almacenistas.delete'); 
+        Route::get('Almacenistas/delete/{id}',[App\Http\Controllers\Almacenes\AppUserController::class, 'deleteAppUsers'])->name('almacenistas.delete'); 
         Route::get('Almacenistas/status/{id}',[App\Http\Controllers\Almacenes\AppUserController::class, 'status']);
         
         
