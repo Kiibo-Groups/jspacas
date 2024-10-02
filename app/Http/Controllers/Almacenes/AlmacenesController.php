@@ -222,7 +222,7 @@ class AlmacenesController extends Controller
 	public function deleteAlmacens($id)
 	{
 		User::find($id)->delete();
-		return Redirect::route($this->folder . 'almacenes')->with('message', 'Registro eliminado con éxito.');
+		return Redirect::route('almacenes.index')->with('message', 'Registro eliminado con éxito.');
 	}
 
 	public function getProductId($id)
