@@ -251,9 +251,16 @@ class AlmacenesController extends Controller
 	public function getProductBarCode($codebar)
 	{
 		try {
-			$code = str_split($codebar); // JSP<ID Supplier><ID Product><Serializacion> |JSP380004  JS37001
-			$product_id = $code[4];
-			$supplier_id = $code[3];
+			$code = explode("-", $codebar); 
+			//str_split($codebar); 
+			/**
+			 * Ejemplo: JSP-3-7-0001
+			 * JSP - <ID Supplier> - <ID Product> - <Serializacion>
+			 *  0          1              2               3
+			 */
+
+			$product_id = $code[2];
+			$supplier_id = $code[1];
 
 			// Validamos si este codigo no se ha ingreado anterioremente
 			$chkCode = Entradas::where('barcode', $codebar)->count();
@@ -321,9 +328,16 @@ class AlmacenesController extends Controller
 	public function getProductBarCodeSalidas($codebar)
 	{
 		try {
-			$code = str_split($codebar); // JSP<ID Supplier><ID Product><Serializacion> | JS37001
-			$product_id = $code[4];
-			$supplier_id = $code[3];
+			$code = explode("-", $codebar); 
+			//str_split($codebar); 
+			/**
+			 * Ejemplo: JSP-3-7-0001
+			 * JSP - <ID Supplier> - <ID Product> - <Serializacion>
+			 *  0          1              2               3
+			 */
+
+			$product_id = $code[2];
+			$supplier_id = $code[1];
 
 			// Validamos si este codigo no se ha ingreado anterioremente
 			$chkCode = Salidas::where('barcode', $codebar)->count();

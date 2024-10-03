@@ -157,7 +157,11 @@ class Product extends Model
             }
 
             // Generamos la clave del producto para la impresión de etiquetas
-            $clave_prod = "JSP".$product->supplier_id.$product->id.$num;
+            $clave_prod = "JSP-".$product->supplier_id.'-'.$product->id.'-'.$num;
+            /**
+             * Ejemplo: 
+             * JSP-7-11-0001
+             */
 
             $data[] = [
                 'Clave' => $clave_prod,
