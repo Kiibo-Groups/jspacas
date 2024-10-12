@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
+
 
 use Validator;
 use Auth;
+
 class Product extends Model
 {
 
@@ -144,7 +147,7 @@ class Product extends Model
     */
     public function PrintLabels($product_id, $qty_labels)
     {
- 
+
         $product  = Product::find($product_id);
         $data   = [];
         $num='0001';
@@ -157,19 +160,36 @@ class Product extends Model
             }
 
             // Generamos la clave del producto para la impresión de etiquetas
-            $clave_prod = "JSP-".$product->supplier_id.'-'.$product->id.'-'.$num;
+            $clave_prod = 'JSP-'.$product->supplier_id.'-'.$product->id.'-'.$num;
+            $crypt      = strtoupper(substr(MD5(Crypt::encryptString($clave_prod)),0,10));
+
             /**
              * Ejemplo: 
-             * JSP-7-11-0001
+             * 7-11-0001
              */
+                
+            $check = Entradas::where('barcode', $clave_prod)->count();
+
+            if($check > 0){ // Esta etiqueta ya se imprimio
+                $num++;
+                $qty_labels++;
+                continue;
+            }
+            
+            // Registrmos la crypt y el payload
+            $lims_print_label = new PrintLabels;
+            $lims_print_label->create([
+                'crypt' => $crypt ,
+                'payload' => $clave_prod
+            ]);
 
             $data[] = [
-                'Clave' => $clave_prod,
+                'Clave' => $crypt,
+                'payload' => $clave_prod,
                 'Descripcion' => $product->meta
             ];
 
             $clave_prod = "";
-
         }
 
 

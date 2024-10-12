@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'SimpleSoftwareIO\\QrCode\\' => array($vendorDir . '/simplesoftwareio/simple-qrcode/src'),
+    'Milon\\Barcode' => array($vendorDir . '/milon/barcode/src'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
     'BaconQrCode' => array($vendorDir . '/bacon/bacon-qr-code/src'),
 );

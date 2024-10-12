@@ -190,12 +190,26 @@
                                 window.location = url;
                             }
                         });   
+                    }else if(data.data == 'codeNotValid'){
+                        inputScanCode.value = "";
+                        inputScanCode.focus();
+
+                        Swal.fire({
+                            title: 'Código No Válido!!',
+                            text: "El código ingresado no ha podido ser validado..",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.value) {
+                                window.location = url;
+                            }
+                        });   
                     }else {
                         let product = data.htmlProduct;
-
                         let dataProd = data.dataProd;
-
-                        console.log(dataProd)
 
                         $("#image_prod").attr('src', dataProd.image);
                         $("#description_prod").text(dataProd.descript);

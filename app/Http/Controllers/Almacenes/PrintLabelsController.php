@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 use App\Exports\ProductsExport;
 use App\Models\{
     Almacen,
-    Product
+    Product,
+    Entradas,
+    PrintLabels
 };
+use Illuminate\Support\Facades\Crypt;
 
 
 use Auth;
@@ -31,7 +34,6 @@ class PrintLabelsController extends Controller
  
     public function store(Request $request)
     {
-
         $input = $request->all();
         if (isset($input['product_id']) && $input['product_id'] != null) {
             return Excel::download(new ProductsExport, 'print_labels.xlsx');

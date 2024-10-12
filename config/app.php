@@ -197,7 +197,9 @@ return [
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         // QR Generator
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
-        Maatwebsite\Excel\ExcelServiceProvider::class
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+
+        Milon\Barcode\BarcodeServiceProvider::class,
     ],
 
     /*
@@ -255,6 +257,9 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+
+        'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
+        'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class
     ],
 
     // 'aliases' => Facade::defaultAliases()->merge([

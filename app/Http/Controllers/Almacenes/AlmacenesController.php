@@ -15,13 +15,15 @@ use App\Models\{
 	Almacen,
 	Suppliers,
 	Entradas,
-	Salidas
+	Salidas,
+	PrintLabels
 };
 
 use Auth;
 use DB;
 use Validator;
 use Redirect;
+ 
 class AlmacenesController extends Controller
 {
 	public $folder = "almacenes.";
@@ -250,82 +252,86 @@ class AlmacenesController extends Controller
 
 	public function getProductBarCode($codebar)
 	{
-		try {
-			$code = explode("-", $codebar); 
-			//str_split($codebar); 
-			/**
-			 * Ejemplo: JSP'3'7'0001
-			 * JSP - <ID Supplier> - <ID Product> - <Serializacion>
-			 *  0          1              2               3
-			 */
-			if (isset($code[2])) {
-				$product_id = $code[2];
-				$supplier_id = $code[1];
+		try { 
+			$crypt = PrintLabels::where('crypt', $codebar)->first();
+
+			if (isset($crypt->id)) {
+				$code = explode("-", $crypt->payload); 
+				/**
+				 * Ejemplo: JSP'3'7'0001
+				 * JSP - <ID Supplier> - <ID Product> - <Serializacion>
+				 *  0          1              2               3
+				 */
+				if (isset($code[2])) {
+					$product_id = $code[2];
+					$supplier_id = $code[1];
+				}else {
+					$code = explode("'", $codebar);
+					$product_id = $code[2];
+					$supplier_id = $code[1];
+				}
+
+				// Validamos si este codigo no se ha ingreado anterioremente
+				$chkCode = Entradas::where('barcode', $codebar)->count();
+				if ($chkCode > 0) {
+					return response()->json(['data' => 'codeRegister' , 'status' => 200]);
+				}
+
+				$product = Product::find($product_id);
+				$supplier = Suppliers::find($supplier_id);
+
+				// Asignamos la bodega / Agregamos QTY
+				$product->bodega_id = Auth::user()->almacen_id;
+				$product->qty = $product->qty+1;
+				$product->save();
+
+				// Agregamos la entrada
+				$entrada = new Entradas;
+				$entrada->products_id = $product_id;
+				$entrada->barcode = $codebar;
+				$entrada->user_id = Auth::user()->id;
+				$entrada->qty = 1;
+				$entrada->save();
+
+				$bodega   = Almacen::find($product->bodega_id)->name;
+				$category = Category::find($product->category_id);
+				$ImageProduct = asset('upload/products/'.$product->image);
+
+				// Generamos el nuevo campo
+				$htmlProduct = "<tr>";
+				$htmlProduct .= "<td>" . $product->id . "</td>"; 
+				$htmlProduct .= "<td><img src='". $ImageProduct ."' style='height: 40px;width: 40px;border-radius: 2003px;'>";
+				$htmlProduct .= "<td>" . $product->name . "</td>";  
+				$htmlProduct .= "<td>" . $supplier->name . "</td>"; 
+				$htmlProduct .= "<td>" . $bodega . "</td>";
+				$htmlProduct .= "<td>" . $category->meta . "</td>";
+				$htmlProduct .= "<td><span class='badge bg-success'>$" . number_format($product->price,2) . "</span></td>";
+				$htmlProduct .= "<td><span class='badge bg-info'>" . $codebar . "</span></td>";
+				$htmlProduct .= "</tr>";
+
+
+				$dataProd = (object)[
+					'id' => $product->id,
+					'image' => $ImageProduct,
+					'name' => $product->name,
+					'supplier' => $supplier->name,
+					'bodega' => $bodega,
+					'category' => $category->meta,
+					'price' => number_format($product->price,2),
+					'code' => $codebar
+				];
+
+				return response()->json([
+					'data' => 'success',
+					'htmlProduct' => $htmlProduct,
+					'product_id' => $product_id,
+					'dataProd' => $dataProd,
+					'AuthUser' => Auth::user()->id,
+					'status' => 200
+				]);
 			}else {
-				$code = explode("'", $codebar);
-				$product_id = $code[2];
-				$supplier_id = $code[1];
+				return response()->json(['data' => 'codeNotValid' , 'status' => 200]);
 			}
-			
-
-			// Validamos si este codigo no se ha ingreado anterioremente
-			$chkCode = Entradas::where('barcode', $codebar)->count();
-			if ($chkCode > 0) {
-				return response()->json(['data' => 'codeRegister' , 'status' => 200]);
-			}
-
-			$product = Product::find($product_id);
-			$supplier = Suppliers::find($supplier_id);
-
-			// Asignamos la bodega / Agregamos QTY
-			$product->bodega_id = Auth::user()->almacen_id;
-			$product->qty = $product->qty+1;
-			$product->save();
-
-			// Agregamos la entrada
-			$entrada = new Entradas;
-            $entrada->products_id = $product_id;
-            $entrada->barcode = $codebar;
-			$entrada->user_id = Auth::user()->id;
-            $entrada->qty = 1;
-            $entrada->save();
-
-			$bodega   =   Almacen::find($product->bodega_id)->name;
-			$category = Category::find($product->category_id);
-			$ImageProduct = asset('upload/products/'.$product->image);
-
-			// Generamos el nuevo campo
-			$htmlProduct = "<tr>";
-			$htmlProduct .= "<td>" . $product->id . "</td>"; 
-			$htmlProduct .= "<td><img src='". $ImageProduct ."' style='height: 40px;width: 40px;border-radius: 2003px;'>";
-			$htmlProduct .= "<td>" . $product->name . "</td>";  
-			$htmlProduct .= "<td>" . $supplier->name . "</td>"; 
-			$htmlProduct .= "<td>" . $bodega . "</td>";
-			$htmlProduct .= "<td>" . $category->meta . "</td>";
-			$htmlProduct .= "<td><span class='badge bg-success'>$" . number_format($product->price,2) . "</span></td>";
-			$htmlProduct .= "<td><span class='badge bg-info'>" . $codebar . "</span></td>";
-			$htmlProduct .= "</tr>";
-
-
-			$dataProd = (object)[
-				'id' => $product->id,
-				'image' => $ImageProduct,
-				'name' => $product->name,
-				'supplier' => $supplier->name,
-				'bodega' => $bodega,
-				'category' => $category->meta,
-				'price' => number_format($product->price,2),
-				'code' => $codebar
-			];
-
-			return response()->json([
-				'data' => 'success',
-				'htmlProduct' => $htmlProduct,
-				'product_id' => $product_id,
-				'dataProd' => $dataProd,
-			 	'AuthUser' => Auth::user()->id,
-				'status' => 200
-			]);
 		} catch (\Exception $th) {
 			return response()->json(['data' => [], 'msg' => $th->getMessage()], 500);
 		}
@@ -334,87 +340,93 @@ class AlmacenesController extends Controller
 	public function getProductBarCodeSalidas($codebar)
 	{
 		try {
-			$code = explode("-", $codebar); 
-			//str_split($codebar); 
-			/**
-			 * Ejemplo: JSP'3'7'0001
-			 * JSP - <ID Supplier> - <ID Product> - <Serializacion>
-			 *  0          1              2               3
-			 */
-			if (isset($code[2])) {
-				$product_id = $code[2];
-				$supplier_id = $code[1];
+			$crypt = PrintLabels::where('crypt', $codebar)->first();
+
+			if (isset($crypt->id)) {
+				$code = explode("-", $crypt->payload); 
+				//str_split($codebar); 
+				/**
+				 * Ejemplo: JSP'3'7'0001
+				 * JSP - <ID Supplier> - <ID Product> - <Serializacion>
+				 *  0          1              2               3
+				 */
+				if (isset($code[2])) {
+					$product_id = $code[2];
+					$supplier_id = $code[1];
+				}else {
+					$code = explode("'", $codebar);
+					$product_id = $code[2];
+					$supplier_id = $code[1];
+				}
+
+				// Validamos si este codigo no se ha ingreado anterioremente
+				$chkCode = Salidas::where('barcode', $codebar)->count();
+				if ($chkCode > 0) {
+					return response()->json(['data' => 'codeRegister' , 'status' => 200]);
+				}
+
+				$product = Product::find($product_id);
+	
+				// Validamos si este codigo no se ha ingreado anterioremente
+				$chkCode = Entradas::where('barcode', $codebar)->count();
+				if ($chkCode == 0) {
+					return response()->json(['data' => 'notEnoughStock' , 'status' => 200]);
+				}
+
+				$supplier = Suppliers::find($supplier_id);
+
+				// Asignamos la bodega / Quitamos QTY
+				$product->bodega_id = Auth::user()->almacen_id;
+				$product->qty = $product->qty-1;
+				$product->save();
+
+				// Agregamos la Salida
+				$entrada = new Salidas;
+				$entrada->products_id = $product_id;
+				$entrada->barcode = $codebar;
+				$entrada->user_id = Auth::user()->id;
+				$entrada->qty = 1;
+				$entrada->save();
+
+				$bodega   =   Almacen::find($product->bodega_id)->name;
+				$category = Category::find($product->category_id);
+				$ImageProduct = asset('upload/products/'.$product->image);
+
+				// Generamos el nuevo campo
+				$htmlProduct = "<tr>";
+				$htmlProduct .= "<td>" . $product->id . "</td>"; 
+				$htmlProduct .= "<td><img src='". $ImageProduct ."' style='height: 40px;width: 40px;border-radius: 2003px;'>";
+				$htmlProduct .= "<td>" . $product->name . "</td>";  
+				$htmlProduct .= "<td>" . $supplier->name . "</td>"; 
+				$htmlProduct .= "<td>" . $bodega . "</td>";
+				$htmlProduct .= "<td>" . $category->meta . "</td>";
+				$htmlProduct .= "<td><span class='badge bg-success'>$" . number_format($product->price,2) . "</span></td>";
+				$htmlProduct .= "<td><span class='badge bg-info'>" . $codebar . "</span></td>";
+				$htmlProduct .= "</tr>";
+
+
+				$dataProd = (object)[
+					'id' => $product->id,
+					'image' => $ImageProduct,
+					'name' => $product->name,
+					'supplier' => $supplier->name,
+					'bodega' => $bodega,
+					'category' => $category->meta,
+					'price' => number_format($product->price,2),
+					'code' => $codebar
+				];
+
+				return response()->json([
+					'data' => 'success',
+					'htmlProduct' => $htmlProduct,
+					'product_id' => $product_id,
+					'dataProd' => $dataProd,
+					'AuthUser' => Auth::user()->id,
+					'status' => 200
+				]);
 			}else {
-				$code = explode("'", $codebar);
-				$product_id = $code[2];
-				$supplier_id = $code[1];
+				return response()->json(['data' => 'codeNotValid' , 'status' => 200]);
 			}
-
-			// Validamos si este codigo no se ha ingreado anterioremente
-			$chkCode = Salidas::where('barcode', $codebar)->count();
-			if ($chkCode > 0) {
-				return response()->json(['data' => 'codeRegister' , 'status' => 200]);
-			}
-
-			$product = Product::find($product_id);
- 
-			// Validamos si este codigo no se ha ingreado anterioremente
-			$chkCode = Entradas::where('barcode', $codebar)->count();
-			if ($chkCode == 0) {
-				return response()->json(['data' => 'notEnoughStock' , 'status' => 200]);
-			}
-
-			$supplier = Suppliers::find($supplier_id);
-
-			// Asignamos la bodega / Quitamos QTY
-			$product->bodega_id = Auth::user()->almacen_id;
-			$product->qty = $product->qty-1;
-			$product->save();
-
-			// Agregamos la Salida
-			$entrada = new Salidas;
-            $entrada->products_id = $product_id;
-            $entrada->barcode = $codebar;
-			$entrada->user_id = Auth::user()->id;
-            $entrada->qty = 1;
-            $entrada->save();
-
-			$bodega   =   Almacen::find($product->bodega_id)->name;
-			$category = Category::find($product->category_id);
-			$ImageProduct = asset('upload/products/'.$product->image);
-
-			// Generamos el nuevo campo
-			$htmlProduct = "<tr>";
-			$htmlProduct .= "<td>" . $product->id . "</td>"; 
-			$htmlProduct .= "<td><img src='". $ImageProduct ."' style='height: 40px;width: 40px;border-radius: 2003px;'>";
-			$htmlProduct .= "<td>" . $product->name . "</td>";  
-			$htmlProduct .= "<td>" . $supplier->name . "</td>"; 
-			$htmlProduct .= "<td>" . $bodega . "</td>";
-			$htmlProduct .= "<td>" . $category->meta . "</td>";
-			$htmlProduct .= "<td><span class='badge bg-success'>$" . number_format($product->price,2) . "</span></td>";
-			$htmlProduct .= "<td><span class='badge bg-info'>" . $codebar . "</span></td>";
-			$htmlProduct .= "</tr>";
-
-
-			$dataProd = (object)[
-				'id' => $product->id,
-				'image' => $ImageProduct,
-				'name' => $product->name,
-				'supplier' => $supplier->name,
-				'bodega' => $bodega,
-				'category' => $category->meta,
-				'price' => number_format($product->price,2),
-				'code' => $codebar
-			];
-
-			return response()->json([
-				'data' => 'success',
-				'htmlProduct' => $htmlProduct,
-				'product_id' => $product_id,
-				'dataProd' => $dataProd,
-			 	'AuthUser' => Auth::user()->id,
-				'status' => 200
-			]);
 		} catch (\Exception $th) {
 			return response()->json(['data' => [], 'msg' => $th->getMessage()], 500);
 		}
