@@ -139,7 +139,7 @@ Route::namespace('App\Http\Controllers\Almacenes')->group(static function() {
     
 
     Route::get('getProductId/{id}',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'getProductId']);
-    Route::get('getProductBarCode/{code}',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'getProductBarCode']);
+    Route::get('getProductBarCode/{code}/{product_id}',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'getProductBarCode']);
     Route::get('getProductBarCodeSalidas/{code}',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'getProductBarCodeSalidas']);
     Route::get('getUserId/{id}',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'getUserId']);
 });

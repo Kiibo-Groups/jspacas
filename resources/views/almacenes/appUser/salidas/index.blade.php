@@ -66,7 +66,8 @@
                     </div>
 
                     <div class="col-md-4">
-                        <div class="card">
+                        <div class="card"> 
+
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="product">Producto *</label> 
@@ -154,115 +155,127 @@
 
     function ScanCodeInput() {
         // Send request to the server to get the product data
+        let product_id = document.getElementById('product_id');
         let productCode = inputScanCode.value;
+        // if (product_id.value != 0) {
+            if (productCode != "") {
+                
+                let route = "{{ url('getProductBarCodeSalidas') }}/"+productCode;
+                
+                fetch(route).then(data => data.json()).then((data) => {
+                    if (data.status == 200) { 
+                        if (data.data == 'codeRegister') {
+                            inputScanCode.value = "";
+                            inputScanCode.focus();
 
-        if (productCode != "") {
-            
-            let route = "{{ url('getProductBarCodeSalidas') }}/"+productCode;
-            
-            fetch(route).then(data => data.json()).then((data) => {
-                if (data.status == 200) { 
-                    if (data.data == 'codeRegister') {
-                        inputScanCode.value = "";
-                        inputScanCode.focus();
+                            Swal.fire({
+                                title: 'Código validado!!',
+                                text: "El código ingresado ya ha sido validado anteriormente..",
+                                type: 'error',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.value) {
+                                    window.location.reload();
+                                }
+                            });   
+                        }else if(data.data == 'notEnoughStock') {
+                            inputScanCode.value = "";
+                            inputScanCode.focus();
 
-                        Swal.fire({
-                            title: 'Código validado!!',
-                            text: "El código ingresado ya ha sido validado anteriormente..",
-                            type: 'error',
-                            showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'OK'
-                        }).then((result) => {
-                            if (result.value) {
-                                window.location = url;
-                            }
-                        });   
-                    }else if(data.data == 'notEnoughStock') {
-                        inputScanCode.value = "";
-                        inputScanCode.focus();
+                            Swal.fire({
+                                title: 'Sin Entradas!!',
+                                text: "El producto que intentas marcar no se ha registrado como entrada..",
+                                type: 'error',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.value) {
+                                    window.location.reload();
+                                }
+                            });   
+                        }else if(data.data == 'codeNotValid'){
+                            inputScanCode.value = "";
+                            inputScanCode.focus();
 
-                        Swal.fire({
-                            title: 'Sin Entradas!!',
-                            text: "El producto que intentas marcar no se ha registrado como entrada..",
-                            type: 'error',
-                            showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'OK'
-                        }).then((result) => {
-                            if (result.value) {
-                                window.location = url;
-                            }
-                        });   
-                    }else if(data.data == 'codeNotValid'){
-                        inputScanCode.value = "";
-                        inputScanCode.focus();
+                            Swal.fire({
+                                title: 'Código No Válido!!',
+                                text: "El código ingresado no ha podido ser validado..",
+                                type: 'error',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.value) {
+                                    window.location.reload();
+                                }
+                            });   
+                        }else {
+                            let product = data.htmlProduct;
 
-                        Swal.fire({
-                            title: 'Código No Válido!!',
-                            text: "El código ingresado no ha podido ser validado..",
-                            type: 'error',
-                            showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'OK'
-                        }).then((result) => {
-                            if (result.value) {
-                                window.location = url;
-                            }
-                        });   
-                    }else {
-                        let product = data.htmlProduct;
+                            let dataProd = data.dataProd;
+    
 
-                        let dataProd = data.dataProd;
- 
-
-                        $("#image_prod").attr('src', dataProd.image);
-                        $("#description_prod").text(dataProd.descript);
-                        $("#name_prod").text(dataProd.name);
-                        $("#supplier_prod").text(dataProd.supplier);
-                        $("#price_prod").text("$"+dataProd.price);
-                        $("#code_prod").text(dataProd.code);
+                            $("#image_prod").attr('src', dataProd.image);
+                            $("#description_prod").text(dataProd.descript);
+                            $("#name_prod").text(dataProd.name);
+                            $("#supplier_prod").text(dataProd.supplier);
+                            $("#price_prod").text("$"+dataProd.price);
+                            $("#code_prod").text(dataProd.code);
 
 
-                        $(".card-body-product").show('slideDown');
- 
-                        $("#products_code").find('tbody').prepend(product).hide().show('slideDown');
-                        inputScanCode.value = "";
-                        inputScanCode.focus();
+                            $(".card-body-product").show('slideDown');
+    
+                            $("#products_code").find('tbody').prepend(product).hide().show('slideDown');
+                            inputScanCode.value = "";
+                            inputScanCode.focus();
 
-                        // $('#products_code').DataTable().ajax.reload();
-                        // table.rows.add({
-                        //     'id' : dataProd.id,
-                        //     'image' : dataProd.image,
-                        //     'name' : dataProd.name,
-                        //     'supplier' : dataProd.supplier,
-                        //     'bodega' : dataProd.bodega,
-                        //     'category' : dataProd.category,
-                        //     'price' :"$"+dataProd.price,
-                        //     'code' : dataProd.code
-                        // }).draw(); 
-                        
+                            // $('#products_code').DataTable().ajax.reload();
+                            // table.rows.add({
+                            //     'id' : dataProd.id,
+                            //     'image' : dataProd.image,
+                            //     'name' : dataProd.name,
+                            //     'supplier' : dataProd.supplier,
+                            //     'bodega' : dataProd.bodega,
+                            //     'category' : dataProd.category,
+                            //     'price' :"$"+dataProd.price,
+                            //     'code' : dataProd.code
+                            // }).draw(); 
+                            
+                        }
                     }
-                }
-            });
-        }else {
-            Swal.fire({
-                title: 'Campo Vacio!!',
-                text: "Por favor ingresa un valor valido..",
-                type: 'warning',
-                showCancelButton: false,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'OK'
-            }).then((result) => {
-                if (result.value) {
-                    window.location.reload();
-                }
-            });
-        }
+                });
+            }else {
+                Swal.fire({
+                    title: 'Campo Vacio!!',
+                    text: "Por favor ingresa un valor valido..",
+                    type: 'warning',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.value) {
+                        window.location.reload();
+                    }
+                });
+            }
+        // }else {
+        //     Swal.fire({
+        //         title: 'Sin Producto asignado!!',
+        //         text: "Por favor selecciona un producto para registrar..",
+        //         type: 'warning',
+        //         showCancelButton: false,
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonColor: '#d33',
+        //         confirmButtonText: 'OK'
+        //     });
+        // }
     }
 </script>
 @endsection

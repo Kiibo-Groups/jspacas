@@ -166,6 +166,7 @@ class AppUserController extends Controller
 		} 
 
 		return view($this->folder . 'entradas.index', [
+		    'products' => Product::where('status',1)->get(),
 			'data' => $data
 		]);
 	}
@@ -198,6 +199,7 @@ class AppUserController extends Controller
 		} 
 		
 		return view($this->folder . 'salidas.index', [
+		    'products' => Product::where('status',1)->get(),
 			'data' => $data
 		]);
 	}

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 
 use Validator;
 use Auth;
+use DateTime;
 
 class Product extends Model
 {
@@ -145,10 +146,10 @@ class Product extends Model
     |Print LABELS Information
     |--------------------------------------
     */
-    public function PrintLabels($product_id, $qty_labels)
+    public function PrintLabels($qty_labels)
     {
 
-        $product  = Product::find($product_id);
+        // $product  = Product::find($product_id);
         $data   = [];
         $num='0001';
         
@@ -160,14 +161,16 @@ class Product extends Model
             }
 
             // Generamos la clave del producto para la impresión de etiquetas
-            $clave_prod = 'JSP-'.$product->supplier_id.'-'.$product->id.'-'.$num;
+            // $clave_prod = 'JSP-'.$product->supplier_id.'-'.$product->id.'-'.$num;
+            $date = new DateTime(now());
+            $clave_prod = 'JSP-'.$date->getTimestamp().'-'.$num;
             $crypt      = strtoupper(substr(MD5(Crypt::encryptString($clave_prod)),0,10));
 
             /**
              * Ejemplo: 
              * 7-11-0001
              */
-                
+            
             $check = Entradas::where('barcode', $clave_prod)->count();
 
             if($check > 0){ // Esta etiqueta ya se imprimio
@@ -186,7 +189,7 @@ class Product extends Model
             $data[] = [
                 'Clave' => $crypt,
                 'payload' => $clave_prod,
-                'Descripcion' => $product->meta
+                'Descripcion' => 'JSPACAS'
             ];
 
             $clave_prod = "";

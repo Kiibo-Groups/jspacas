@@ -250,26 +250,26 @@ class AlmacenesController extends Controller
 		}
 	}
 
-	public function getProductBarCode($codebar)
+	public function getProductBarCode($codebar, $product_id)
 	{
 		try { 
 			$crypt = PrintLabels::where('crypt', $codebar)->first();
 
 			if (isset($crypt->id)) {
-				$code = explode("-", $crypt->payload); 
-				/**
-				 * Ejemplo: JSP'3'7'0001
-				 * JSP - <ID Supplier> - <ID Product> - <Serializacion>
-				 *  0          1              2               3
-				 */
-				if (isset($code[2])) {
-					$product_id = $code[2];
-					$supplier_id = $code[1];
-				}else {
-					$code = explode("'", $codebar);
-					$product_id = $code[2];
-					$supplier_id = $code[1];
-				}
+				// $code = explode("-", $crypt->payload); 
+				// /**
+				//  * Ejemplo: JSP'3'7'0001
+				//  * JSP - <ID Supplier> - <ID Product> - <Serializacion>
+				//  *  0          1              2               3
+				//  */
+				// if (isset($code[2])) {
+				// 	$product_id = $code[2];
+				// 	$supplier_id = $code[1];
+				// }else {
+				// 	$code = explode("'", $codebar);
+				// 	$product_id = $code[2];
+				// 	$supplier_id = $code[1];
+				// }
 
 				// Validamos si este codigo no se ha ingreado anterioremente
 				$chkCode = Entradas::where('barcode', $codebar)->count();
@@ -278,7 +278,7 @@ class AlmacenesController extends Controller
 				}
 
 				$product = Product::find($product_id);
-				$supplier = Suppliers::find($supplier_id);
+				$supplier = Suppliers::find($product->supplier_id);
 
 				// Asignamos la bodega / Agregamos QTY
 				$product->bodega_id = Auth::user()->almacen_id;
@@ -343,37 +343,41 @@ class AlmacenesController extends Controller
 			$crypt = PrintLabels::where('crypt', $codebar)->first();
 
 			if (isset($crypt->id)) {
-				$code = explode("-", $crypt->payload); 
-				//str_split($codebar); 
-				/**
-				 * Ejemplo: JSP'3'7'0001
-				 * JSP - <ID Supplier> - <ID Product> - <Serializacion>
-				 *  0          1              2               3
-				 */
-				if (isset($code[2])) {
-					$product_id = $code[2];
-					$supplier_id = $code[1];
-				}else {
-					$code = explode("'", $codebar);
-					$product_id = $code[2];
-					$supplier_id = $code[1];
-				}
+				// $code = explode("-", $crypt->payload); 
+				// //str_split($codebar); 
+				// /**
+				//  * Ejemplo: JSP'3'7'0001
+				//  * JSP - <ID Supplier> - <ID Product> - <Serializacion>
+				//  *  0          1              2               3
+				//  */
+				// if (isset($code[2])) {
+				// 	$product_id = $code[2];
+				// 	$supplier_id = $code[1];
+				// }else {
+				// 	$code = explode("'", $codebar);
+				// 	$product_id = $code[2];
+				// 	$supplier_id = $code[1];
+				// }
 
 				// Validamos si este codigo no se ha ingreado anterioremente
 				$chkCode = Salidas::where('barcode', $codebar)->count();
 				if ($chkCode > 0) {
 					return response()->json(['data' => 'codeRegister' , 'status' => 200]);
 				}
-
-				$product = Product::find($product_id);
 	
 				// Validamos si este codigo no se ha ingreado anterioremente
-				$chkCode = Entradas::where('barcode', $codebar)->count();
-				if ($chkCode == 0) {
+				$chkCode = Entradas::where('barcode', $codebar)->first();
+				if (!$chkCode->id) {
 					return response()->json(['data' => 'notEnoughStock' , 'status' => 200]);
 				}
 
-				$supplier = Suppliers::find($supplier_id);
+				// Validamos que el producto es el mismo que intentamos registrar
+				// if ($chkCode->products_id != $product_id) {
+				// 	return response()->json(['data' => 'codeNotValid' , 'status' => 200]);
+				// }
+
+				$product = Product::find($chkCode->products_id);
+				$supplier = Suppliers::find($product->supplier_id);
 
 				// Asignamos la bodega / Quitamos QTY
 				$product->bodega_id = Auth::user()->almacen_id;
@@ -382,7 +386,7 @@ class AlmacenesController extends Controller
 
 				// Agregamos la Salida
 				$entrada = new Salidas;
-				$entrada->products_id = $product_id;
+				$entrada->products_id = $chkCode->products_id;
 				$entrada->barcode = $codebar;
 				$entrada->user_id = Auth::user()->id;
 				$entrada->qty = 1;
@@ -419,7 +423,7 @@ class AlmacenesController extends Controller
 				return response()->json([
 					'data' => 'success',
 					'htmlProduct' => $htmlProduct,
-					'product_id' => $product_id,
+					'product_id' => $chkCode->products_id,
 					'dataProd' => $dataProd,
 					'AuthUser' => Auth::user()->id,
 					'status' => 200

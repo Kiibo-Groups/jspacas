@@ -68,8 +68,26 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="product">Selecciona el producto *</label> 
+                                            <div class="input-group">
+                                                <select name="product" id="product_id" class="form-select"  required="required" > 
+                                                    <option value="0">Selecciona un producto</option>
+                                                    @foreach($products as $cat)
+                                                    <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
                                 <div class="form-group">
-                                    <label for="product">Producto *</label> 
+                                    <label for="product">Código de barras *</label> 
                                     <div class="input-group"> 
                                         <input type="text" class="form-control" id="inputScanCode" placeholder="Ingresa el Código de barras" aria-label="product" aria-describedby="basic-addon1">
                                         <span class="input-group-text" id="basic-addon1" style="cursor: pointer" onclick="ScanCodeInput()">
@@ -165,95 +183,107 @@
 
     function ScanCodeInput() {
         // Send request to the server to get the product data
+        let product_id = document.getElementById('product_id');
         let productCode = inputScanCode.value;
 
-        if (productCode != "") {
-            
-            let route = "{{ url('getProductBarCode') }}/"+productCode;
-            
-            fetch(route).then(data => data.json()).then((data) => {
-                if (data.status == 200) { 
-                    if (data.data == 'codeRegister') {
-                        inputScanCode.value = "";
-                        inputScanCode.focus();
+        if (product_id.value != 0) {
+            if (productCode != "") {
+                let route = "{{ url('getProductBarCode') }}/"+productCode+"/"+product_id.value;
+                fetch(route).then(data => data.json()).then((data) => {
+                    if (data.status == 200) { 
+                        if (data.data == 'codeRegister') {
+                            inputScanCode.value = "";
+                            inputScanCode.focus();
 
-                        Swal.fire({
-                            title: 'Código validado!!',
-                            text: "El código ingresado ya ha sido validado anteriormente..",
-                            type: 'error',
-                            showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'OK'
-                        }).then((result) => {
-                            if (result.value) {
-                                window.location = url;
-                            }
-                        });   
-                    }else if(data.data == 'codeNotValid'){
-                        inputScanCode.value = "";
-                        inputScanCode.focus();
+                            Swal.fire({
+                                title: 'Código validado!!',
+                                text: "El código ingresado ya ha sido validado anteriormente..",
+                                type: 'error',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.value) {
+                                    window.location.reload();
+                                }
+                            });   
+                        }else if(data.data == 'codeNotValid'){
+                            inputScanCode.value = "";
+                            inputScanCode.focus();
 
-                        Swal.fire({
-                            title: 'Código No Válido!!',
-                            text: "El código ingresado no ha podido ser validado..",
-                            type: 'error',
-                            showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'OK'
-                        }).then((result) => {
-                            if (result.value) {
-                                window.location = url;
-                            }
-                        });   
-                    }else {
-                        let product = data.htmlProduct;
-                        let dataProd = data.dataProd;
+                            Swal.fire({
+                                title: 'Código No Válido!!',
+                                text: "El código ingresado no ha podido ser validado..",
+                                type: 'error',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.value) {
+                                    window.location.reload();
+                                }
+                            });   
+                        }else {
+                            let product = data.htmlProduct;
+                            let dataProd = data.dataProd;
 
-                        $("#image_prod").attr('src', dataProd.image);
-                        $("#description_prod").text(dataProd.descript);
-                        $("#name_prod").text(dataProd.name);
-                        $("#supplier_prod").text(dataProd.supplier);
-                        $("#price_prod").text("$"+dataProd.price);
-                        $("#code_prod").text(dataProd.code);
+                            $("#image_prod").attr('src', dataProd.image);
+                            $("#description_prod").text(dataProd.descript);
+                            $("#name_prod").text(dataProd.name);
+                            $("#supplier_prod").text(dataProd.supplier);
+                            $("#price_prod").text("$"+dataProd.price);
+                            $("#code_prod").text(dataProd.code);
 
 
-                        $(".card-body-product").show('slideDown');
- 
-                        $("#products_code").find('tbody').prepend(product).hide().show('slideDown');
-                        inputScanCode.value = "";
-                        inputScanCode.focus();
-                        // $('#products_code').DataTable().ajax.reload();
-                        // table.rows.add({
-                        //     'id' : dataProd.id,
-                        //     'image' : dataProd.image,
-                        //     'name' : dataProd.name,
-                        //     'supplier' : dataProd.supplier,
-                        //     'bodega' : dataProd.bodega,
-                        //     'category' : dataProd.category,
-                        //     'price' :"$"+dataProd.price,
-                        //     'code' : dataProd.code
-                        // }).draw(); 
-                        
+                            $(".card-body-product").show('slideDown');
+    
+                            $("#products_code").find('tbody').prepend(product).hide().show('slideDown');
+                            inputScanCode.value = "";
+                            inputScanCode.focus();
+                            // $('#products_code').DataTable().ajax.reload();
+                            // table.rows.add({
+                            //     'id' : dataProd.id,
+                            //     'image' : dataProd.image,
+                            //     'name' : dataProd.name,
+                            //     'supplier' : dataProd.supplier,
+                            //     'bodega' : dataProd.bodega,
+                            //     'category' : dataProd.category,
+                            //     'price' :"$"+dataProd.price,
+                            //     'code' : dataProd.code
+                            // }).draw(); 
+                            
+                        }
                     }
-                }
-            });
+                });
+            }else {
+                Swal.fire({
+                    title: 'Campo Vacio!!',
+                    text: "Por favor ingresa un valor valido..",
+                    type: 'warning',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.value) {
+                        window.location.reload();
+                    }
+                });
+            }
         }else {
             Swal.fire({
-                title: 'Campo Vacio!!',
-                text: "Por favor ingresa un valor valido..",
+                title: 'Sin Producto asignado!!',
+                text: "Por favor selecciona un producto para registrar..",
                 type: 'warning',
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'OK'
-            }).then((result) => {
-                if (result.value) {
-                    window.location.reload();
-                }
             });
         }
     }
+ 
 </script>
 @endsection

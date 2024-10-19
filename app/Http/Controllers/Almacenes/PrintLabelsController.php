@@ -35,11 +35,7 @@ class PrintLabelsController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
-        if (isset($input['product_id']) && $input['product_id'] != null) {
-            return Excel::download(new ProductsExport, 'print_labels.xlsx');
-        }else {
-            return redirect()->route('print_labels')->with('error', 'No hay productos seleccionados.');
-        }
+        return Excel::download(new ProductsExport, 'print_labels.xlsx');
     }
 
 }
