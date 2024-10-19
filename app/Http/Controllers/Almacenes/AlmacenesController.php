@@ -55,11 +55,60 @@ class AlmacenesController extends Controller
 	{
 		$allData = Almacen::where('user_id', Auth::user()->id)
 			->where('status', 1)
+			->with('products')
 			->withCount('products')
 			->get();
+			
+		$data = [];
+
+		foreach ($allData as $key) {
+
+			$sum_amount = 0;
+			$sum_qty    = 0;
+			$prods_entradas = 0;
+			$prods_salidas  = 0;
+			foreach ($key->products as $prods) {
+				$sum_amount = $sum_amount + floatval($prods->price) ;
+				$sum_qty    = $sum_qty + $prods->qty;
+				
+				$prods_entradas = $prods_entradas + Entradas::where('products_id', $prods->id)->count();
+				
+				$prods_salidas = $prods_salidas + Salidas::where('products_id', $prods->id)->count();
+			}
+
+			$totProds = Product::where('status' ,1)->count();
+			$percentAdvance = ($key->products_count * 100) / $totProds;
+
+			$data[] =  (Object)[
+				'id' => $key->id,
+				'user_id' => $key->user_id,
+				'almacenista_id' => $key->almacenista_id,
+				'name' => $key->name,
+				'email' => $key->email,
+				'phone' => $key->phone,
+				'street' => $key->street,
+				'zip_code' => $key->zip_code,
+				'state' => $key->state,
+				'city' => $key->city,
+				'no_exterior' => $key->no_exterior,
+				'no_interior' => $key->no_interior,
+				'details' => $key->details,
+				'products_count' => $key->products_count,
+				'sum_amount' => number_format($sum_amount,2),
+				'sum_qty'  => $sum_qty,
+				'percentAdvance' => number_format($percentAdvance,0),
+				'products' => $totProds,
+				'entradas' => $prods_entradas,
+				'salidas'  => $prods_salidas
+			];
+		}
+
+		// return response()->json([
+		// 	'almacens' => $data
+		// ]);
 
 		return view($this->folder . 'dashboard.home', [
-			'almacens' => $allData
+			'almacens' =>$data
 		]);
 	}
 

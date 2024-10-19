@@ -47,17 +47,20 @@
         <div class="col-xl-3 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title mt-0 mb-4">{{ $item->name }}</h4>
-                    <div class="widget-chart-1">
-                        <div class="widget-chart-box-1 float-start" dir="ltr">
-                            <input data-plugin="knob" data-width="70" data-height="70" data-fgColor="#f05050 "
-                                    data-bgColor="#F9B9B9" value="58"
-                                    data-skin="tron" data-angleOffset="180" data-readOnly=true
-                                    data-thickness=".15"/>
+                    <h4 class="header-title mt-0 mb-4">{{ $item->name }} <small>({{$item->products_count}} Productos)</small> </h4>
+
+                    <div class="widget-box-2">
+                        <div class="widget-detail-2 text-end">
+                            <span class="badge bg-info rounded-pill float-start mt-3">{{$item->percentAdvance}}% <i class="mdi mdi-trending-up"></i> </span>
+                            <h2 class="fw-normal mb-1">  ${{$item->sum_amount}}  </h2>
+                            <p class="text-muted mb-3">{{$item->entradas}} Entradas | {{ $item->salidas }} Salidas</p>
                         </div>
-                        <div class="widget-detail-1 text-end">
-                            <h2 class="fw-normal pt-2 mb-1"> $0 </h2>
-                            <p class="text-muted mb-1">{{$item->products_count}} Productos</p>
+                        <div class="progress progress-bar-alt-info progress-sm">
+                            <div class="progress-bar bg-info" role="progressbar"
+                                    aria-valuenow="{{$item->percentAdvance}}" aria-valuemin="0" aria-valuemax="100"
+                                    style="width: {{$item->percentAdvance}}%;">
+                                <span class="visually-hidden">{{$item->percentAdvance}}% Complete</span>
+                            </div>
                         </div>
                     </div>
                 </div>
