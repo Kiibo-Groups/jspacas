@@ -189,7 +189,7 @@ class Product extends Model
             $data[] = [
                 'Clave' => $crypt,
                 'payload' => $clave_prod,
-                'Descripcion' => 'JSPACAS'
+                'Descripcion' => 'PACAS'
             ];
 
             $clave_prod = "";
