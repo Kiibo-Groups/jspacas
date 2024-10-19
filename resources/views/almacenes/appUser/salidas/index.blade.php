@@ -130,7 +130,7 @@
 
     var table = $("#products_code").DataTable({
         order: [[1, 'desc']],
-        buttons: ["copy", "pdf"],
+        buttons: ["copy"],
        
     }); 
     $("#selection-datatable").DataTable({

@@ -29,6 +29,7 @@
                                 <th>Bodega</th> 
                                 <th>Categoria</th> 
                                 <th>Precio</th>
+                                <th>Stock</th>
                                 <th>Status</th>
                                 <th style="text-align: right">Opciones</th>
                             </tr> 
@@ -39,7 +40,7 @@
                                 <tr>
                                     <td width="10%">
                                         <img src="{{ asset('upload/products/'.$row->image) }}"
-                                            style="height: 50px;max-width:none !important;">
+                                            style="height: 50px;max-width:50px;border-radius: 2003px !important;">
                                     </td>
                                     <td>{{ $row->name }}</td>
                                     <td>
@@ -51,6 +52,7 @@
                                     </td> 
                                     <td>{{ $row->Cat }}</td> 
                                     <td>${{ number_format($row->price,2) }}</td>
+                                    <td>{{ $row->qty }}</td>
                                     <td>
                                         @if ($row->status == 1)
                                             <button type="button"  class="btn btn-xs btn-soft-success waves-effect waves-light"

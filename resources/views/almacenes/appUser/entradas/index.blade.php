@@ -147,7 +147,7 @@
 
     var table = $("#products_code").DataTable({
         order: [[1, 'desc']],
-        buttons: ["copy", "pdf"],
+        buttons: ["copy"],
         columns: [
             { data: 'id' },
             { data: 'image' },
