@@ -112,6 +112,20 @@ class AlmacenesController extends Controller
 		]);
 	}
 
+	public function view_bodega($id)
+	{
+		$allData = Product::where('bodega_id',$id)->orderBy('updated_at','DESC')->get();
+		$almacen = Almacen::find($id);
+		// return response()->json([
+		// 	'data' => $allData
+		// ]);
+
+		return view($this->folder . 'dashboard.viewBodegas', [
+			'almacen' => $almacen,
+			'data' => $allData
+		]);
+	}
+
 	/*
 	   |------------------------------------------------------------------
 	   |Account Settings

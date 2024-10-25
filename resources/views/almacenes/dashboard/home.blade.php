@@ -62,6 +62,9 @@
                                 <span class="visually-hidden">{{$item->percentAdvance}}% Complete</span>
                             </div>
                         </div>
+                        <section class="d-flex justify-content-end pt-2">
+                            <a href="{{ url('view_bodega/'.$item->id) }}" class="btn btn-info">Ver más</a>
+                        </section>
                     </div>
                 </div>
             </div>

@@ -21,6 +21,15 @@ Route::namespace('App\Http\Controllers\Almacenes')->group(static function() {
         |-----------------------------------------
         */
         Route::get('/',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'index']); 
+
+              
+        /*
+        |---------------------------------------------------
+        |Dashboard and Account Setting, Logout & ViewBodega
+        |---------------------------------------------------
+        */
+        Route::get('home',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'home'])->name('home');
+        Route::get('/view_bodega/{id}',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'view_bodega']); 
  
         /*
         |-----------------------------------------
@@ -110,14 +119,6 @@ Route::namespace('App\Http\Controllers\Almacenes')->group(static function() {
         Route::resource('products', App\Http\Controllers\Almacenes\ProductsController::class);
         Route::get('products/delete/{id}',[App\Http\Controllers\Almacenes\ProductsController::class, 'destroy'])->name('products.delete'); 
         Route::get('products/status/{id}',[App\Http\Controllers\Almacenes\ProductsController::class, 'status']);
-      
-        /*
-        |-----------------------------------------
-        |Dashboard and Account Setting & Logout
-        |-----------------------------------------
-        */
-        Route::get('home',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'home'])->name('home');
-
 
      
         /*
@@ -127,9 +128,13 @@ Route::namespace('App\Http\Controllers\Almacenes')->group(static function() {
         */
         Route::get('account',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'account'])->name('account'); 
         Route::post('update_account',[App\Http\Controllers\Almacenes\AlmacenesController::class, 'update_account']);
- 
-
         
+
+        /*
+        |---------------------------------------------------
+        |Entradas / Salidas / Pendientes
+        |---------------------------------------------------
+        */
         Route::get('entradas', [App\Http\Controllers\Almacenes\AppUserController::class, 'entradas'])->name('entradas');
         Route::get('salidas', [App\Http\Controllers\Almacenes\AppUserController::class, 'salidas'])->name('salidas');
         Route::get('pendientes', [App\Http\Controllers\Almacenes\AppUserController::class, 'pendientes'])->name('pendientes');
